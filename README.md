@@ -43,10 +43,25 @@ Pull requests welcome.
 
 How?
 ====
+
+### Installing
+Installing the library is as easy as
+
+```bash
+$ go get github.com/lucasb-eyer/go-colorful
+```
+
+The package can then be used through an
+
+```go
+import "github.com/lucasb-eyer/go-colorful"
+```
+
+### Basic usage
+
 Create a beautiful blue color using different source space:
 
 ```go
-import "colorful"
 c := colorful.Color{0.313725, 0.478431, 0.721569}
 c := colorful.Hex("#517AB8")
 c := colorful.Hsv(216.0, 0.56, 0.722)
