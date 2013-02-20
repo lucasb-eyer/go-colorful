@@ -91,7 +91,7 @@ to visual/perceptual distance. This means that two pairs of colors which have th
 same distance in RGB space can look much further apart. This is fixed by the
 L\*a\*b\* color space. Thus you should only compare colors in that space.
 
-[[/doc/colordist.png]]
+![Color distance comparison](https://raw.github.com/lucasb-eyer/go-colorful/master/doc/colordist.png)
 
 The two colors shown on the top look much more different than the two shown on
 the bottom. Still, in RGB space, their distance is the same.
