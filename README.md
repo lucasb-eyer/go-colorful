@@ -41,6 +41,12 @@ Pull requests welcome.
 - The [HCL](http://vis4.net/blog/posts/avoid-equidistant-hsv-colors/) color space.
 - The [CIELUV](http://en.wikipedia.org/wiki/CIELUV) color space.
 
+So which colorspace should I use?
+=================================
+It depends on what you want to do. I think the folks from *I want hue* are
+on-spot when they say that RGB fits to how *screens produce* color, CIE L\*a\*b\*
+fits how *humans perceive* color and HCL fits how *humans think* colors.
+
 How?
 ====
 
@@ -78,6 +84,46 @@ h, s, v := c.Hsv()
 x, y, z := c.Xyz()
 l, a, b := c.Lab()
 ```
+
+### Comparing colors
+In the RGB color space, the Euclidian distance between colors *doesn't* correspond
+to visual/perceptual distance. This means that two pairs of colors which have the
+same distance in RGB space can look much further apart. This is fixed by the
+L\*a\*b\* color space. Thus you should only compare colors in that space.
+
+[[/doc/colordist.png]]
+
+The two colors shown on the top look much more different than the two shown on
+the bottom. Still, in RGB space, their distance is the same.
+Here is a little example program which shows the distances between the top two
+and bottom two colors in RGB and in L\*a\*b\* space. You can find it in `doc/colordist.go`.
+
+```go
+package main
+
+import "github.com/lucasb-eyer/go-colorful"
+
+func main() {
+    c1a := colorful.Color{150.0/255.0, 10.0/255.0, 150.0/255.0}
+    c1b := colorful.Color{ 53.0/255.0, 10.0/255.0, 150.0/255.0}
+    c2a := colorful.Color{10.0/255.0, 150.0/255.0, 50.0/255.0}
+    c2b := colorful.Color{99.9/255.0, 150.0/255.0, 10.0/255.0}
+
+    fmt.Printf("DistanceRgb: c1: %v and c2: %v\n", c1a.DistanceRgb(c1b), c2a.DistanceRgb(c2b))
+    fmt.Printf("DistanceLab: c1: %v and c2: %v\n", c1a.DistanceLab(c1b), c2a.DistanceLab(c2b))
+}
+```
+
+Running the above program shows that you should always prefer L\*a\*b\* distance:
+
+```bash
+$ go run colordist.go
+DistanceRgb: 0.3803921568627451 and 0.3858713931171159
+DistanceLab: 0.32043169229603413 and 0.24397340448513863
+```
+
+Note that `AlmostEqualRgb` is provided mainly for (unit-)testing purposes. Use
+it only if you really know what you're doing. It will eat your cat.
 
 ### Getting random palettes/colors
 TODO

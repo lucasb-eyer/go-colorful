@@ -46,7 +46,7 @@ var vals = []struct{
 func TestHsvCreation(t *testing.T) {
     for i, tt := range vals {
         c := Hsv(tt.hsv[0], tt.hsv[1], tt.hsv[2])
-        if !c.AlmostEqual(tt.c) {
+        if !c.AlmostEqualRgb(tt.c) {
             t.Errorf("%v. Hsv(%v) => (%v), want %v (delta %v)", i, tt.hsv, c, tt.c, delta)
         }
     }
@@ -67,7 +67,7 @@ func TestHsvConversion(t *testing.T) {
 func TestHexCreation(t *testing.T) {
     for i, tt := range vals {
         c, err := Hex(tt.hex)
-        if err != nil || !c.AlmostEqual(tt.c) {
+        if err != nil || !c.AlmostEqualRgb(tt.c) {
             t.Errorf("%v. Hex(%v) => (%v), want %v (delta %v)", i, tt.hex, c, tt.c, delta)
         }
     }
@@ -76,7 +76,7 @@ func TestHexCreation(t *testing.T) {
 func TestHEXCreation(t *testing.T) {
     for i, tt := range vals {
         c, err := Hex(strings.ToUpper(tt.hex))
-        if err != nil || !c.AlmostEqual(tt.c) {
+        if err != nil || !c.AlmostEqualRgb(tt.c) {
             t.Errorf("%v. HEX(%v) => (%v), want %v (delta %v)", i, strings.ToUpper(tt.hex), c, tt.c, delta)
         }
     }
@@ -100,7 +100,7 @@ func TestHexConversion(t *testing.T) {
 func TestXyzCreation(t *testing.T) {
     for i, tt := range vals {
         c := Xyz(tt.xyz[0], tt.xyz[1], tt.xyz[2])
-        if !c.AlmostEqual(tt.c) {
+        if !c.AlmostEqualRgb(tt.c) {
             t.Errorf("%v. Xyz(%v) => (%v), want %v (delta %v)", i, tt.xyz, c, tt.c, delta)
         }
     }
@@ -121,7 +121,7 @@ func TestXyzConversion(t *testing.T) {
 func TestLabCreation(t *testing.T) {
     for i, tt := range vals {
         c := Lab(tt.lab[0], tt.lab[1], tt.lab[2])
-        if !c.AlmostEqual(tt.c) {
+        if !c.AlmostEqualRgb(tt.c) {
             t.Errorf("%v. Lab(%v) => (%v), want %v (delta %v)", i, tt.lab, c, tt.c, delta)
         }
     }
@@ -139,7 +139,7 @@ func TestLabConversion(t *testing.T) {
 func TestLabWhiteRefCreation(t *testing.T) {
     for i, tt := range vals {
         c := LabWhiteRef(tt.lab50[0], tt.lab50[1], tt.lab50[2], D50)
-        if !c.AlmostEqual(tt.c) {
+        if !c.AlmostEqualRgb(tt.c) {
             t.Errorf("%v. LabWhiteRef(%v, D50) => (%v), want %v (delta %v)", i, tt.lab50, c, tt.c, delta)
         }
     }

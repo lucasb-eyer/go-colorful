@@ -12,7 +12,7 @@ type Color struct {
     R, G, B float64
 }
 
-// This is the tolerance used when comparing colors using AlmostEqual.
+// This is the tolerance used when comparing colors using AlmostEqualRgb.
 const Delta = 1.0/255.0
 
 // This is the default reference white point.
@@ -21,21 +21,21 @@ var D65 = [3]float64{0.95043, 1.00000, 1.08890}
 // And another one.
 var D50 = [3]float64{0.96421, 1.00000, 0.82519}
 
+func sq(v float64) float64 {
+    return v * v;
+}
+
+// DistanceRgb computes the distance between two colors in RGB space.
+// This is not a good measure! Rather do it in Lab space.
+func (c1 Color) DistanceRgb(c2 Color) float64 {
+    return math.Sqrt(sq(c1.R-c2.R) + sq(c1.G-c2.G) + sq(c1.B-c2.B))
+}
+
 // Check for equality between colors within the tolerance Delta (1/255).
-func (c1 Color) AlmostEqual(c2 Color) bool {
+func (c1 Color) AlmostEqualRgb(c2 Color) bool {
     return math.Abs(c1.R - c2.R) +
            math.Abs(c1.G - c2.G) +
            math.Abs(c1.B - c2.B) < 3.0*Delta
-}
-
-// BlendLab blends two colors in the L*a*b* color-space, which should result in a smoother blend.
-// t == 0 results in c1, t == 1 results in c2
-func (c1 Color) BlendLab(c2 Color, t float64) Color {
-    l1, a1, b1 := c1.Lab()
-    l2, a2, b2 := c2.Lab()
-    return Lab(l1 + t*(l2 - l1),
-               a1 + t*(a2 - a1),
-               b1 + t*(b2 - b1))
 }
 
 //func (c1 Color) BlendHcl(c2 Color, t float64) Color {
@@ -254,6 +254,25 @@ func Lab(l, a, b float64) Color {
 
 func LabWhiteRef(l, a, b float64, wref [3]float64) Color {
     return Xyz(LabToXyzWhiteRef(l, a, b, wref))
+}
+
+// DistanceLab is a good measure of visual similarity between two colors!
+// A result of 0 would mean identical colors, while a result of 1 or higher
+// means the colors differ a lot.
+func (c1 Color) DistanceLab(c2 Color) float64 {
+    l1, a1, b1 := c1.Lab()
+    l2, a2, b2 := c2.Lab()
+    return math.Sqrt(sq(l1-l2) + sq(a1-a2) + sq(b1-b2))
+}
+
+// BlendLab blends two colors in the L*a*b* color-space, which should result in a smoother blend.
+// t == 0 results in c1, t == 1 results in c2
+func (c1 Color) BlendLab(c2 Color, t float64) Color {
+    l1, a1, b1 := c1.Lab()
+    l2, a2, b2 := c2.Lab()
+    return Lab(l1 + t*(l2 - l1),
+               a1 + t*(a2 - a1),
+               b1 + t*(b2 - b1))
 }
 
 func HappyColor() Color {
