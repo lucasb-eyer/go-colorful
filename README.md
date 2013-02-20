@@ -103,7 +103,7 @@ FAQ
 ===
 
 ### Q: I get all f!@#ed up values! Your library sucks!
-You probably provided values in the wrong range. For example, RGB values are
+A: You probably provided values in the wrong range. For example, RGB values are
 expected to reside between 0 and 1, *not* between 0 and 255. Normalize your colors.
 
 License: MIT
