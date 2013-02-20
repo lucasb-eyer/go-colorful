@@ -15,6 +15,12 @@ type Color struct {
 // This is the tolerance used when comparing colors using AlmostEqual.
 const Delta = 1.0/255.0
 
+// This is the default reference white point.
+var D65 = [3]float64{0.95043, 1.00000, 1.08890}
+
+// And another one.
+var D50 = [3]float64{0.96421, 1.00000, 0.82519}
+
 // Check for equality between colors within the tolerance Delta (1/255).
 func (c1 Color) AlmostEqual(c2 Color) bool {
     return math.Abs(c1.R - c2.R) +
@@ -190,8 +196,6 @@ func Xyz(x, y, z float64) Color {
 //////////////
 // http://en.wikipedia.org/wiki/Lab_color_space#CIELAB-CIEXYZ_conversions
 
-var d65 = [3]float64{0.95043, 1.00000, 1.08890}
-
 func lab_f(t float64) float64 {
     if t > 6.0/29.0 * 6.0/29.0 * 6.0/29.0 {
         return math.Cbrt(t)
@@ -204,14 +208,14 @@ func XyzToLab(x, y, z float64) (l, a, b float64) {
     // Use D65 white as reference point by default.
     // http://www.fredmiranda.com/forum/topic/1035332
     // http://en.wikipedia.org/wiki/Standard_illuminant
-    return XyzToLabWhiteRef(x, y, z, d65[0], d65[1], d65[2])
+    return XyzToLabWhiteRef(x, y, z, D65)
 }
 
-func XyzToLabWhiteRef(x, y, z, Xwref, Ywref, Zwref float64) (l, a, b float64) {
-    fy := lab_f(y/Ywref)
+func XyzToLabWhiteRef(x, y, z float64, wref [3]float64) (l, a, b float64) {
+    fy := lab_f(y/wref[1])
     l = 1.16*fy - 0.16
-    a = 5.0*(lab_f(x/Xwref) - fy)
-    b = 2.0*(fy - lab_f(z/Zwref))
+    a = 5.0*(lab_f(x/wref[0]) - fy)
+    b = 2.0*(fy - lab_f(z/wref[2]))
     return l, a, b
 }
 
@@ -224,14 +228,14 @@ func lab_finv(t float64) float64 {
 
 func LabToXyz(l, a, b float64) (x, y, z float64) {
     // D65 white (see above).
-    return LabToXyzWhiteRef(l, a, b, d65[0], d65[1], d65[2])
+    return LabToXyzWhiteRef(l, a, b, D65)
 }
 
-func LabToXyzWhiteRef(l, a, b, Xwref, Ywref, Zwref float64) (x, y, z float64) {
+func LabToXyzWhiteRef(l, a, b float64, wref [3]float64) (x, y, z float64) {
     l2 := (l + 0.16) / 1.16
-    x = Xwref * lab_finv(l2 + a/5.0)
-    y = Ywref * lab_finv(l2)
-    z = Zwref * lab_finv(l2 - b/2.0)
+    x = wref[0] * lab_finv(l2 + a/5.0)
+    y = wref[1] * lab_finv(l2)
+    z = wref[2] * lab_finv(l2 - b/2.0)
     return x, y, z
 }
 
@@ -239,17 +243,17 @@ func (col Color) Lab() (float64, float64, float64) {
     return XyzToLab(col.Xyz())
 }
 
-func (col Color) LabWhiteRef(Xwref, Ywref, Zwref float64) (float64, float64, float64) {
+func (col Color) LabWhiteRef(wref [3]float64) (float64, float64, float64) {
     x, y, z := col.Xyz()
-    return XyzToLabWhiteRef(x, y, z, Xwref, Ywref, Zwref)
+    return XyzToLabWhiteRef(x, y, z, wref)
 }
 
 func Lab(l, a, b float64) Color {
     return Xyz(LabToXyz(l, a, b))
 }
 
-func LabWhiteRef(l, a, b, Xwref, Ywref, Zwref float64) Color {
-    return Xyz(LabToXyzWhiteRef(l, a, b, Xwref, Ywref, Zwref))
+func LabWhiteRef(l, a, b float64, wref [3]float64) Color {
+    return Xyz(LabToXyzWhiteRef(l, a, b, wref))
 }
 
 func HappyColor() Color {

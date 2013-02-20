@@ -39,7 +39,6 @@ var vals = []struct{
     {Color{1.0, 0.0, 0.0}, [3]float64{  0.0, 1.0, 1.0}, "#ff0000", [3]float64{0.41240,0.21260,0.01930}, [3]float64{0.53233, 0.80109, 0.67220}, [3]float64{0.53233, 0.78301, 0.62172}, [3]float64{0.53233, 1.75053, 0.37751}, [3]float64{0.53233, 1.67219, 0.24092}},
     {Color{0.0, 0.0, 0.0}, [3]float64{  0.0, 0.0, 0.0}, "#000000", [3]float64{0.00000,0.00000,0.00000}, [3]float64{0.00000, 0.00000, 0.00000}, [3]float64{0.00000, 0.00000, 0.00000}, [3]float64{0.00000, 0.00000, 0.00000}, [3]float64{0.00000, 0.00000, 0.00000}},
 }
-var d50 = [3]float64{0.96421, 1.0, 0.82519}
 
 /// HSV ///
 ///////////
@@ -139,18 +138,18 @@ func TestLabConversion(t *testing.T) {
 
 func TestLabWhiteRefCreation(t *testing.T) {
     for i, tt := range vals {
-        c := LabWhiteRef(tt.lab50[0], tt.lab50[1], tt.lab50[2], d50[0], d50[1], d50[2])
+        c := LabWhiteRef(tt.lab50[0], tt.lab50[1], tt.lab50[2], D50)
         if !c.AlmostEqual(tt.c) {
-            t.Errorf("%v. LabWhiteRef(%v, d50) => (%v), want %v (delta %v)", i, tt.lab50, c, tt.c, delta)
+            t.Errorf("%v. LabWhiteRef(%v, D50) => (%v), want %v (delta %v)", i, tt.lab50, c, tt.c, delta)
         }
     }
 }
 
 func TestLabWhiteRefConversion(t *testing.T) {
     for i, tt := range vals {
-        l, a, b := tt.c.LabWhiteRef(d50[0], d50[1], d50[2])
+        l, a, b := tt.c.LabWhiteRef(D50)
         if !almosteq(l, tt.lab50[0]) || !almosteq(a, tt.lab50[1]) || !almosteq(b, tt.lab50[2]) {
-            t.Errorf("%v. %v.LabWhiteRef(d50) => (%v), want %v (delta %v)", i, tt.c, [3]float64{l, a, b}, tt.lab50, delta)
+            t.Errorf("%v. %v.LabWhiteRef(D50) => (%v), want %v (delta %v)", i, tt.c, [3]float64{l, a, b}, tt.lab50, delta)
         }
     }
 }
