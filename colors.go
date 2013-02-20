@@ -69,7 +69,7 @@ func (col Color) Hsv() (h, s, v float64) {
         h *= 60.0
         if h < 0.0 { h += 360.0 }
     }
-    return h, s, v
+    return
 }
 
 // Hsv creates a new Color given a Hue in [0..360], a Saturation and a Value in [0..1]
@@ -103,7 +103,7 @@ func (col Color) Hex() string {
 }
 
 // Hex parses a "html" hex color-string, either in the 3 "#f0c" or 6 "#ff1034" digits form.
-func Hex(scol string) (col Color, err error) {
+func Hex(scol string) (Color, error) {
     format := "#%02x%02x%02x"
     if len(scol) == 4 {
         format = "#%x%x%x"
@@ -137,7 +137,7 @@ func (col Color) LinearRgb() (r, g, b float64) {
     r = linearize(col.R)
     g = linearize(col.G)
     b = linearize(col.B)
-    return r, g, b
+    return
 }
 
 // FastLinearRgb is much faster than and almost as accurate as LinearRgb.
@@ -145,7 +145,7 @@ func (col Color) FastLinearRgb() (r, g, b float64) {
     r = math.Pow(col.R, 2.2)
     g = math.Pow(col.G, 2.2)
     b = math.Pow(col.B, 2.2)
-    return r, g, b
+    return
 }
 
 func delinearize(v float64) float64 {
@@ -170,21 +170,21 @@ func XyzToLinearRgb(x, y, z float64) (r, g, b float64) {
     r =  3.2406*x - 1.5372*y - 0.4986*z
     g = -0.9689*x + 1.8758*y + 0.0416*z
     b =  0.0557*x - 0.2040*y + 1.0570*z
-    return r, g, b
+    return
 }
 
 func LinearRgbToXyz(r, g, b float64) (x, y, z float64) {
     x = 0.4124*r + 0.3576*g + 0.1805*b
     y = 0.2126*r + 0.7152*g + 0.0722*b
     z = 0.0193*r + 0.1192*g + 0.9505*b
-    return x, y, z
+    return
 }
 
 /// XYZ ///
 ///////////
 // http://www.sjbrown.co.uk/2004/05/14/gamma-correct-rendering/
 
-func (col Color) Xyz() (float64, float64, float64) {
+func (col Color) Xyz() (x, y, z float64) {
     return LinearRgbToXyz(col.LinearRgb())
 }
 
@@ -216,7 +216,7 @@ func XyzToLabWhiteRef(x, y, z float64, wref [3]float64) (l, a, b float64) {
     l = 1.16*fy - 0.16
     a = 5.0*(lab_f(x/wref[0]) - fy)
     b = 2.0*(fy - lab_f(z/wref[2]))
-    return l, a, b
+    return
 }
 
 func lab_finv(t float64) float64 {
@@ -236,14 +236,14 @@ func LabToXyzWhiteRef(l, a, b float64, wref [3]float64) (x, y, z float64) {
     x = wref[0] * lab_finv(l2 + a/5.0)
     y = wref[1] * lab_finv(l2)
     z = wref[2] * lab_finv(l2 - b/2.0)
-    return x, y, z
+    return
 }
 
-func (col Color) Lab() (float64, float64, float64) {
+func (col Color) Lab() (l, a, b float64) {
     return XyzToLab(col.Xyz())
 }
 
-func (col Color) LabWhiteRef(wref [3]float64) (float64, float64, float64) {
+func (col Color) LabWhiteRef(wref [3]float64) (l, a, b float64) {
     x, y, z := col.Xyz()
     return XyzToLabWhiteRef(x, y, z, wref)
 }
