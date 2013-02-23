@@ -11,6 +11,15 @@ type Color struct {
     R, G, B float64
 }
 
+// Implement the Go color.Color interface.
+func (col Color) RGBA() (r, g, b, a uint32) {
+    r = uint32(col.R*65535.0)
+    g = uint32(col.G*65535.0)
+    b = uint32(col.B*65535.0)
+    a = 0xFFFF
+    return
+}
+
 // This is the tolerance used when comparing colors using AlmostEqualRgb.
 const Delta = 1.0/255.0
 

@@ -10,7 +10,8 @@ when we wanted the server to assign the players random colors. Sometimes
 two players got very similar colors, which bugged me. The very same evening,
 [I want hue](http://tools.medialab.sciences-po.fr/iwanthue/) was the top post
 on HackerNews' frontpage and showed me how to Do It Right (tm). Last but not
-least, there was no library for handling color spaces available in go.
+least, there was no library for handling color spaces available in go. Colorful
+does just that and implements Go's color.Color interface.
 
 What?
 =====
