@@ -196,6 +196,7 @@ func Xyz(x, y, z float64) Color {
 /// L*a*b* ///
 //////////////
 // http://en.wikipedia.org/wiki/Lab_color_space#CIELAB-CIEXYZ_conversions
+// For L*a*b*, we need to L*a*b*<->XYZ->RGB and the first one is device dependent.
 
 func lab_f(t float64) float64 {
     if t > 6.0/29.0 * 6.0/29.0 * 6.0/29.0 {
@@ -204,7 +205,6 @@ func lab_f(t float64) float64 {
     return t/3.0 * 29.0/6.0 * 29.0/6.0 + 4.0/29.0
 }
 
-// For L*a*b*, we need to L*a*b*->XYZ->RGB and the first one is device dependent.
 func XyzToLab(x, y, z float64) (l, a, b float64) {
     // Use D65 white as reference point by default.
     // http://www.fredmiranda.com/forum/topic/1035332
@@ -240,19 +240,25 @@ func LabToXyzWhiteRef(l, a, b float64, wref [3]float64) (x, y, z float64) {
     return
 }
 
+// Converts the given color to CIE L*a*b* space using D65 as reference white.
 func (col Color) Lab() (l, a, b float64) {
     return XyzToLab(col.Xyz())
 }
 
+// Converts the given color to CIE L*a*b* space, taking into account
+// a given reference white. (i.e. the monitor's white)
 func (col Color) LabWhiteRef(wref [3]float64) (l, a, b float64) {
     x, y, z := col.Xyz()
     return XyzToLabWhiteRef(x, y, z, wref)
 }
 
+// Generates a color by using data given in CIE L*a*b* space using D65 as reference white.
 func Lab(l, a, b float64) Color {
     return Xyz(LabToXyz(l, a, b))
 }
 
+// Generates a color by using data given in CIE L*a*b* space, taking
+// into account a given reference white. (i.e. the monitor's white)
 func LabWhiteRef(l, a, b float64, wref [3]float64) Color {
     return Xyz(LabToXyzWhiteRef(l, a, b, wref))
 }
