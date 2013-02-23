@@ -4,7 +4,6 @@ package colorful
 import(
     "fmt"
     "math"
-    "math/rand"
 )
 
 // A color is stored internally using sRGB (standard RGB) values in the range 0-1
@@ -21,8 +20,19 @@ var D65 = [3]float64{0.95043, 1.00000, 1.08890}
 // And another one.
 var D50 = [3]float64{0.96421, 1.00000, 0.82519}
 
+// Checks whether the color exists in RGB space, i.e. all values are in [0..1]
+func (c Color) IsValid() bool {
+    return 0.0 <= c.R && c.R <= 1.0 &&
+           0.0 <= c.G && c.G <= 1.0 &&
+           0.0 <= c.B && c.B <= 1.0
+}
+
 func sq(v float64) float64 {
     return v * v;
+}
+
+func cub(v float64) float64 {
+    return v * v * v;
 }
 
 // DistanceRgb computes the distance between two colors in RGB space.
@@ -37,13 +47,6 @@ func (c1 Color) AlmostEqualRgb(c2 Color) bool {
            math.Abs(c1.G - c2.G) +
            math.Abs(c1.B - c2.B) < 3.0*Delta
 }
-
-//func (c1 Color) BlendHcl(c2 Color, t float64) Color {
-//}
-
-// TODO: implement HCL, maybe drop HSV?
-// http://stat.ethz.ch/R-manual/R-patched/library/grDevices/html/hcl.html
-// http://stackoverflow.com/questions/7530627/hcl-color-to-rgb-and-backward
 
 /// HSV ///
 ///////////
@@ -282,10 +285,138 @@ func (c1 Color) BlendLab(c2 Color, t float64) Color {
                b1 + t*(b2 - b1))
 }
 
-func HappyColor() Color {
-    H := rand.Float64() * 360.0
-    S := 0.8+rand.Float64()*0.2
-    V := 0.6+rand.Float64()*0.3
+/// L*u*v* ///
+//////////////
+// http://en.wikipedia.org/wiki/CIELUV#XYZ_.E2.86.92_CIELUV_and_CIELUV_.E2.86.92_XYZ_conversions
+// For L*u*v*, we need to L*u*v*<->XYZ<->RGB and the first one is device dependent.
 
-    return Hsv(H,S,V)
+func XyzToLuv(x, y, z float64) (l, a, b float64) {
+    // Use D65 white as reference point by default.
+    // http://www.fredmiranda.com/forum/topic/1035332
+    // http://en.wikipedia.org/wiki/Standard_illuminant
+    return XyzToLuvWhiteRef(x, y, z, D65)
 }
+
+func XyzToLuvWhiteRef(x, y, z float64, wref [3]float64) (l, u, v float64) {
+    if y/wref[1] <= 6.0/29.0 * 6.0/29.0 * 6.0/29.0 {
+        l = y/wref[1] * 29.0/3.0 * 29.0/3.0 * 29.0/3.0
+    } else {
+        l = 1.16 * math.Cbrt(y/wref[1]) - 0.16
+    }
+    ubis, vbis := xyz_to_uv(x, y, z)
+    un, vn := xyz_to_uv(wref[0], wref[1], wref[2])
+    u = 13.0*l * (ubis - un)
+    v = 13.0*l * (vbis - vn)
+    return
+}
+
+// For this part, we do as R's graphics.hcl does, not as wikipedia does.
+// Or is it the same?
+func xyz_to_uv(x, y, z float64) (u, v float64) {
+    denom := x + 15.0*y + 3.0*z
+    if denom == 0.0 {
+        u, v = 0.0, 0.0
+    } else {
+        u = 4.0*x/denom
+        v = 9.0*y/denom
+    }
+    return
+}
+
+func LuvToXyz(l, u, v float64) (x, y, z float64) {
+    // D65 white (see above).
+    return LuvToXyzWhiteRef(l, u, v, D65)
+}
+
+func LuvToXyzWhiteRef(l, u, v float64, wref [3]float64) (x, y, z float64) {
+    //y = wref[1] * lab_finv((l + 0.16) / 1.16)
+    if l <= 0.08 {
+        y = wref[1] * l * 100.0 * 3.0/29.0 * 3.0/29.0 * 3.0/29.0
+    } else {
+        y = wref[1] * cub((l+0.16)/1.16)
+    }
+    un, vn := xyz_to_uv(wref[0], wref[1], wref[2])
+    if l != 0.0 {
+        ubis := u/(13.0*l) + un
+        vbis := v/(13.0*l) + vn
+        x = y*9.0*ubis/(4.0*vbis)
+        z = y*(12.0-3.0*ubis-20.0*vbis)/(4.0*vbis)
+    } else {
+        x, y = 0.0, 0.0
+    }
+    return
+}
+
+// Converts the given color to CIE L*u*v* space using D65 as reference white.
+// L* is in [0..1] and both u* and v* are in about [-1..1]
+func (col Color) Luv() (l, u, v float64) {
+    return XyzToLuv(col.Xyz())
+}
+
+// Converts the given color to CIE L*u*v* space, taking into account
+// a given reference white. (i.e. the monitor's white)
+// L* is in [0..1] and both u* and v* are in about [-1..1]
+func (col Color) LuvWhiteRef(wref [3]float64) (l, u, v float64) {
+    x, y, z := col.Xyz()
+    return XyzToLuvWhiteRef(x, y, z, wref)
+}
+
+// Generates a color by using data given in CIE L*u*v* space using D65 as reference white.
+// L* is in [0..1] and both u* and v* are in about [-1..1]
+func Luv(l, u, v float64) Color {
+    return Xyz(LuvToXyz(l, u, v))
+}
+
+// Generates a color by using data given in CIE L*u*v* space, taking
+// into account a given reference white. (i.e. the monitor's white)
+// L* is in [0..1] and both u* and v* are in about [-1..1]
+func LuvWhiteRef(l, u, v float64, wref [3]float64) Color {
+    return Xyz(LuvToXyzWhiteRef(l, u, v, wref))
+}
+
+/// HCL ///
+///////////
+// HCL is nothing else than L*a*b* in cylindrical coordinates!
+// (this was wrong on English wikipedia, I fixed it, let's hope the fix stays.)
+// But it is widely popular since it is a "correct HSV"
+// http://www.hunterlab.com/appnotes/an09_96a.pdf
+
+// Converts the given color to HCL space using D65 as reference white.
+// H values are in [0..360], C and L values are in [0..1] although C can overshoot 1.0
+func (col Color) Hcl() (h, c, l float64) {
+    return col.HclWhiteRef(D65)
+}
+
+// Converts the given color to HCL space, taking into account
+// a given reference white. (i.e. the monitor's white)
+// H values are in [0..360], C and L values are in [0..1]
+func (col Color) HclWhiteRef(wref [3]float64) (h, c, l float64) {
+    L, a, b := col.LabWhiteRef(wref)
+
+    // Oops, floating point workaround necessary if a ~= b and both are very small (i.e. almost zero).
+    if math.Abs(b - a) > 1e-4 && b > 1e-4 {
+        h = math.Mod(57.29577951308232087721*math.Atan2(b, a) + 360.0, 360.0) // Rad2Deg
+    } else {
+        h = 0.0
+    }
+    c = math.Sqrt(sq(a) + sq(b))
+    l = L
+    return
+}
+
+// Generates a color by using data given in HCL space using D65 as reference white.
+// H values are in [0..360], C and L values are in [0..1]
+func Hcl(h, c, l float64) Color {
+    return HclWhiteRef(h, c, l, D65)
+}
+
+// Generates a color by using data given in HCL space, taking
+// into account a given reference white. (i.e. the monitor's white)
+// H values are in [0..360], C and L values are in [0..1]
+func HclWhiteRef(h, c, l float64, wref [3]float64) Color {
+    H := 0.01745329251994329576*h // Deg2Rad
+    a := c*math.Cos(H)
+    b := c*math.Sin(H)
+    return LabWhiteRef(l, a, b, wref)
+}
+

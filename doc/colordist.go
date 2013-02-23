@@ -10,6 +10,7 @@ func main() {
     c2a := colorful.Color{10.0/255.0, 150.0/255.0, 50.0/255.0}
     c2b := colorful.Color{99.9/255.0, 150.0/255.0, 10.0/255.0}
 
-    fmt.Printf("DistanceRgb: %v and %v\n", c1a.DistanceRgb(c1b), c2a.DistanceRgb(c2b))
-    fmt.Printf("DistanceLab: %v and %v\n", c1a.DistanceLab(c1b), c2a.DistanceLab(c2b))
+    fmt.Printf("DistanceRgb: c1: %v and c2: %v\n", c1a.DistanceRgb(c1b), c2a.DistanceRgb(c2b))
+    fmt.Printf("DistanceLab: c1: %v and c2: %v\n", c1a.DistanceLab(c1b), c2a.DistanceLab(c2b))
+    fmt.Printf("DistanceLuv: c1: %v and c2: %v\n", c1a.DistanceLuv(c1b), c2a.DistanceLuv(c2b))
 }
