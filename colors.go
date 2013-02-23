@@ -124,6 +124,7 @@ func Hex(scol string) (Color, error) {
 /// Linear ///
 //////////////
 // http://www.sjbrown.co.uk/2004/05/14/gamma-correct-rendering/
+// http://www.brucelindbloom.com/Eqn_RGB_to_XYZ.html
 
 func linearize(v float64) float64 {
     if v <= 0.04045 {
@@ -167,16 +168,16 @@ func FastLinearRgb(r, g, b float64) Color {
 
 // XyzToLinearRgb converts from CIE XYZ-space to Linear RGB space.
 func XyzToLinearRgb(x, y, z float64) (r, g, b float64) {
-    r =  3.2406*x - 1.5372*y - 0.4986*z
-    g = -0.9689*x + 1.8758*y + 0.0416*z
-    b =  0.0557*x - 0.2040*y + 1.0570*z
+    r =  3.2404542*x - 1.5371385*y - 0.4985314*z
+    g = -0.9692660*x + 1.8760108*y + 0.0415560*z
+    b =  0.0556434*x - 0.2040259*y + 1.0572252*z
     return
 }
 
 func LinearRgbToXyz(r, g, b float64) (x, y, z float64) {
-    x = 0.4124*r + 0.3576*g + 0.1805*b
-    y = 0.2126*r + 0.7152*g + 0.0722*b
-    z = 0.0193*r + 0.1192*g + 0.9505*b
+    x = 0.4124564*r + 0.3575761*g + 0.1804375*b
+    y = 0.2126729*r + 0.7151522*g + 0.0721750*b
+    z = 0.0193339*r + 0.1191920*g + 0.9503041*b
     return
 }
 
