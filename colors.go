@@ -403,7 +403,7 @@ func (col Color) HclWhiteRef(wref [3]float64) (h, c, l float64) {
     L, a, b := col.LabWhiteRef(wref)
 
     // Oops, floating point workaround necessary if a ~= b and both are very small (i.e. almost zero).
-    if math.Abs(b - a) > 1e-4 && b > 1e-4 {
+    if math.Abs(b - a) > 1e-4 && math.Abs(a) > 1e-4 {
         h = math.Mod(57.29577951308232087721*math.Atan2(b, a) + 360.0, 360.0) // Rad2Deg
     } else {
         h = 0.0
