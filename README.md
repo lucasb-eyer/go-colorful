@@ -166,7 +166,7 @@ of the CIE color spaces, you might get invalid RGB colors! This is important if
 the starting and ending colors are user-input or random. An example of where this
 happens is when blending between `#eeef61` and `#1e3140`:
 
-![Invalid RGB colors may crop up when blending in CIE spaces.](docs/colorblend_invalid.png)
+![Invalid RGB colors may crop up when blending in CIE spaces.](doc/colorblend_invalid.png)
 
 You can test whether a color is a valid RGB color by calling the `IsValid` method
 and indeed, calling IsValid will return false for the redish colors on the bottom.
@@ -174,7 +174,7 @@ One way to "fix" this is to get a valid color close to the invalid one by callin
 `Clamped`, which always returns a nearby valid color. Doing this, we get the
 following result, which is satisfactory:
 
-![Fixing invalid RGB colors by clamping them to the valid range.](docs/colorblend_clamped.png)
+![Fixing invalid RGB colors by clamping them to the valid range.](doc/colorblend_clamped.png)
 
 ### Getting random palettes/colors
 TODO (Is in the works.)
