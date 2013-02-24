@@ -143,8 +143,41 @@ DistanceLuv: c1: 0.513456934258258 and c2: 0.2568727826318425
 Note that `AlmostEqualRgb` is provided mainly for (unit-)testing purposes. Use
 it only if you really know what you're doing. It will eat your cat.
 
+### Blending colors
+Blending is highly connected to distance, since it basically "walks through" the
+colorspace thus, if the colorspace maps distances well, the walk is "smooth".
+
+Colorful comes with blending functions in RGB, HSV and any of the LAB spaces.
+Of course, you'd rather want to use the blending functions of the LAB spaces since
+these spaces map distances well but, just in case, here is an example showing
+you how the blendings (`#fdffcc` to `#242a42`) are done in the various spaces:
+
+![Blending colors in different spaces.](doc/colorblend.png)
+
+What you see is that HSL is really bad: it adds some green, which is not present
+in the original colors at all! RGB is much better, but it stays light a little
+too long. LUV and LAB both hit the right lightness but LAB has a little more
+color. HCL works in the same vein as HSL (both cylindrical interpolations) but
+it does it right in that there is no green appearing and the lighthness changes
+in a linear manner.
+
+While this seems all good, you need to know one thing: When interpolating in any
+of the CIE color spaces, you might get invalid RGB colors! This is important if
+the starting and ending colors are user-input or random. An example of where this
+happens is when blending between `#eeef61` and `#1e3140`:
+
+![Invalid RGB colors may crop up when blending in CIE spaces.](docs/colorblend_invalid.png)
+
+You can test whether a color is a valid RGB color by calling the `IsValid` method
+and indeed, calling IsValid will return false for the redish colors on the bottom.
+One way to "fix" this is to get a valid color close to the invalid one by calling
+`Clamped`, which always returns a nearby valid color. Doing this, we get the
+following result, which is satisfactory:
+
+![Fixing invalid RGB colors by clamping them to the valid range.](docs/colorblend_clamped.png)
+
 ### Getting random palettes/colors
-TODO
+TODO (Is in the works.)
 
 ### Using linear RGB for computations
 There are two methods for transforming RGB<->Linear RGB: a fast and almost precise one,

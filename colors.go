@@ -36,6 +36,16 @@ func (c Color) IsValid() bool {
            0.0 <= c.B && c.B <= 1.0
 }
 
+func clamp01(v float64) float64 {
+    return math.Max(0.0, math.Min(v, 1.0))
+}
+
+// Returns Clamps the color into valid range, clamping each value to [0..1]
+// If the color is valid already, this is a no-op.
+func (c Color) Clamped() Color {
+    return Color{clamp01(c.R), clamp01(c.G), clamp01(c.B)}
+}
+
 func sq(v float64) float64 {
     return v * v;
 }
@@ -56,6 +66,14 @@ func (c1 Color) AlmostEqualRgb(c2 Color) bool {
            math.Abs(c1.G - c2.G) +
            math.Abs(c1.B - c2.B) < 3.0*Delta
 }
+
+// You don't really want to use this, do you? Go for BlendLab, BlendLuv or BlendHcl.
+func (c1 Color) BlendRgb(c2 Color, t float64) Color {
+    return Color{c1.R + t*(c2.R - c1.R),
+                 c1.G + t*(c2.G - c1.G),
+                 c1.B + t*(c2.B - c1.B)}
+}
+
 
 /// HSV ///
 ///////////
@@ -103,6 +121,27 @@ func Hsv(H, S, V float64) Color {
     }
 
     return Color{m+r, m+g, m+b}
+}
+
+// You don't really want to use this, do you? Go for BlendLab, BlendLuv or BlendHcl.
+func (c1 Color) BlendHsv(c2 Color, t float64) Color {
+    h1, s1, v1 := c1.Hsv()
+    h2, s2, v2 := c2.Hsv()
+
+    // We know that h are both in [0..360]
+    var H float64
+    if math.Abs(h2 - h1) <= 180.0 {
+        // Won't wrap
+        H = h1 + t*(h2-h1)
+    } else if h1 < h2 {
+        // Will wrap
+        H = math.Mod(h1 + 360.0 + t*(h2 - h1 - 360.0), 360.0)
+    } else {
+        // Will wrap
+        H = math.Mod(h2 + 360.0 + t*(h1 - h2 - 360.0), 360.0)
+    }
+
+    return Hsv(H, s1 + t*(s2 - s1), v1 + t*(v2 - v1))
 }
 
 /// Hex ///
@@ -383,6 +422,25 @@ func LuvWhiteRef(l, u, v float64, wref [3]float64) Color {
     return Xyz(LuvToXyzWhiteRef(l, u, v, wref))
 }
 
+// DistanceLuv is a good measure of visual similarity between two colors!
+// A result of 0 would mean identical colors, while a result of 1 or higher
+// means the colors differ a lot.
+func (c1 Color) DistanceLuv(c2 Color) float64 {
+    l1, u1, v1 := c1.Luv()
+    l2, u2, v2 := c2.Luv()
+    return math.Sqrt(sq(l1-l2) + sq(u1-u2) + sq(v1-v2))
+}
+
+// BlendLuv blends two colors in the CIE-L*u*v* color-space, which should result in a smoother blend.
+// t == 0 results in c1, t == 1 results in c2
+func (c1 Color) BlendLuv(c2 Color, t float64) Color {
+    l1, u1, v1 := c1.Luv()
+    l2, u2, v2 := c2.Luv()
+    return Luv(l1 + t*(l2 - l1),
+               u1 + t*(u2 - u1),
+               v1 + t*(v2 - v1))
+}
+
 /// HCL ///
 ///////////
 // HCL is nothing else than L*a*b* in cylindrical coordinates!
@@ -429,3 +487,24 @@ func HclWhiteRef(h, c, l float64, wref [3]float64) Color {
     return LabWhiteRef(l, a, b, wref)
 }
 
+// BlendHcl blends two colors in the CIE-L*C*h° color-space, which should result in a smoother blend.
+// t == 0 results in c1, t == 1 results in c2
+func (col1 Color) BlendHcl(col2 Color, t float64) Color {
+    h1, c1, l1 := col1.Hcl()
+    h2, c2, l2 := col2.Hcl()
+
+    // We know that h are both in [0..360]
+    var H float64
+    if math.Abs(h2 - h1) <= 180.0 {
+        // Won't wrap
+        H = h1 + t*(h2-h1)
+    } else if h1 < h2 {
+        // Will wrap
+        H = math.Mod(h1 + 360.0 + t*(h2 - h1 - 360.0), 360.0)
+    } else {
+        // Will wrap
+        H = math.Mod(h2 + 360.0 + t*(h1 - h2 - 360.0), 360.0)
+    }
+
+    return Hcl(H, c1 + t*(c2 - c1), l1 + t*(l2 - l1))
+}
