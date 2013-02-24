@@ -5,7 +5,6 @@ import "fmt"
 import "go-colorful"
 import "image"
 import "image/draw"
-//import "image/color"
 import "image/png"
 import "os"
 
