@@ -222,7 +222,49 @@ func main() {
 }
 ```
 
-### Getting random palettes/colors
+### Getting random colors
+It is sometimes necessary to generate random colors. You could simply do this
+on your own by generating colors with random values. By restricting the random
+values to a range smaller than [0..1] and using a space such as CIE-H\*C\*l° or
+HSV, you can generate both random shades of a color or random colors of a
+lightness:
+
+```go
+random_blue := colorful.Hcl(180.0+rand.Float64()*50.0, 0.2+rand.Float64()*0.8, 0.3+rand.Float64()*0.7)
+random_dark := colorful.Hcl(rand.Float64()*360.0, rand.Float64(), rand.Float64()*0.4)
+random_light := colorful.Hcl(rand.Float64()*360.0, rand.Float64(), 0.6+rand.Float64()*0.4)
+```
+
+Since getting random "warm" and "happy" colors is quite a common task, there
+are some helper functions:
+
+```go
+colorful.WarmColor()
+colorful.HappyColor()
+colorful.FastWarmColor()
+colorful.FastHappyColor()
+```
+
+The ones prefixed by `Fast` are faster but less coherent since they use the HSV
+space as opposed to the regular ones which use CIE-L\*C\*h° space. The
+following picture shows the warm colors in the top two rows and happy colors
+in the bottom two rows. Within these, the first is the regular one and the
+second is the fast one.
+
+![Warm, fast warm, happy and fast happy random colors, respectively.](doc/colorgens.png)
+
+Don't forget to initialize the random seed! You can see the code used for
+generating this picture in `doc/golorgens.go`.
+
+### Getting random palettes
+As soon as you need to generate more than one random color, you probably want
+them to be distinguishible. Playing against an opponent which has almost the
+same blue as I do is not fun. This is where random palettes can help.
+
+These palettes are generated using an algorithm which ensures that all colors
+on the palette are as distinguishible as possible. For more theory on how this
+is done exactly, check out [I want hue](http://tools.medialab.sciences-po.fr/iwanthue/theory.php).
+
 TODO (Is in the works.)
 
 ### Using linear RGB for computations
