@@ -275,13 +275,14 @@ colors to generate, which could, for example, be the player count. They return
 an array of `colorful.Color` objects:
 
 ```go
-pal1 := colorful.WarmPalette(10)
+pal1, err1 := colorful.WarmPalette(10)
 pal2 := colorful.FastWarmPalette(10)
-pal3 := colorful.HappyPalette(10)
+pal3, err3 := colorful.HappyPalette(10)
 pal4 := colorful.FastHappyPalette(10)
-pal5 := colorful.SoftPalette(10)
+pal5, err5 := colorful.SoftPalette(10)
 ```
 
+Note that the non-fast methods *may* fail if you ask for way too many colors.
 Let's move on to the advanced one, namely `SoftPaletteEx`. Besides the color
 count, this function takes a `SoftPaletteSettings` object as argument. The
 interesting part here is its `CheckColor` member, which is a boolean function
