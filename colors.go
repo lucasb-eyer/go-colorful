@@ -454,12 +454,7 @@ func (col Color) Hcl() (h, c, l float64) {
     return col.HclWhiteRef(D65)
 }
 
-// Converts the given color to HCL space, taking into account
-// a given reference white. (i.e. the monitor's white)
-// H values are in [0..360], C and L values are in [0..1]
-func (col Color) HclWhiteRef(wref [3]float64) (h, c, l float64) {
-    L, a, b := col.LabWhiteRef(wref)
-
+func LabToHcl(L, a, b float64) (h, c, l float64) {
     // Oops, floating point workaround necessary if a ~= b and both are very small (i.e. almost zero).
     if math.Abs(b - a) > 1e-4 && math.Abs(a) > 1e-4 {
         h = math.Mod(57.29577951308232087721*math.Atan2(b, a) + 360.0, 360.0) // Rad2Deg
@@ -471,20 +466,34 @@ func (col Color) HclWhiteRef(wref [3]float64) (h, c, l float64) {
     return
 }
 
+// Converts the given color to HCL space, taking into account
+// a given reference white. (i.e. the monitor's white)
+// H values are in [0..360], C and L values are in [0..1]
+func (col Color) HclWhiteRef(wref [3]float64) (h, c, l float64) {
+    L, a, b := col.LabWhiteRef(wref)
+    return LabToHcl(L, a, b)
+}
+
 // Generates a color by using data given in HCL space using D65 as reference white.
 // H values are in [0..360], C and L values are in [0..1]
 func Hcl(h, c, l float64) Color {
     return HclWhiteRef(h, c, l, D65)
 }
 
+func HclToLab(h, c, l float64) (L, a, b float64) {
+    H := 0.01745329251994329576*h // Deg2Rad
+    a = c*math.Cos(H)
+    b = c*math.Sin(H)
+    L = l
+    return
+}
+
 // Generates a color by using data given in HCL space, taking
 // into account a given reference white. (i.e. the monitor's white)
 // H values are in [0..360], C and L values are in [0..1]
 func HclWhiteRef(h, c, l float64, wref [3]float64) Color {
-    H := 0.01745329251994329576*h // Deg2Rad
-    a := c*math.Cos(H)
-    b := c*math.Sin(H)
-    return LabWhiteRef(l, a, b, wref)
+    L, a, b := HclToLab(h, c, l)
+    return LabWhiteRef(L, a, b, wref)
 }
 
 // BlendHcl blends two colors in the CIE-L*C*h° color-space, which should result in a smoother blend.
