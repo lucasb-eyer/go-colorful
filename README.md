@@ -117,6 +117,7 @@ and bottom two colors in RGB, CIE-L\*a\*b\* and CIE-L\*u\*v\* space. You can fin
 ```go
 package main
 
+import "fmt"
 import "github.com/lucasb-eyer/go-colorful"
 
 func main() {
