@@ -24,10 +24,10 @@ func (col Color) RGBA() (r, g, b, a uint32) {
 const Delta = 1.0/255.0
 
 // This is the default reference white point.
-var D65 = [3]float64{0.95043, 1.00000, 1.08890}
+var D65 = [3]float64{0.95047, 1.00000, 1.08883}
 
 // And another one.
-var D50 = [3]float64{0.96421, 1.00000, 0.82519}
+var D50 = [3]float64{0.96422, 1.00000, 0.82521}
 
 // Checks whether the color exists in RGB space, i.e. all values are in [0..1]
 func (c Color) IsValid() bool {

@@ -117,6 +117,7 @@ and bottom two colors in RGB, CIE-L\*a\*b\* and CIE-L\*u\*v\* space. You can fin
 ```go
 package main
 
+import "fmt"
 import "github.com/lucasb-eyer/go-colorful"
 
 func main() {
@@ -154,10 +155,10 @@ you how the blendings (`#fdffcc` to `#242a42`) are done in the various spaces:
 
 ![Blending colors in different spaces.](doc/colorblend.png)
 
-What you see is that HSL is really bad: it adds some green, which is not present
+What you see is that HSV is really bad: it adds some green, which is not present
 in the original colors at all! RGB is much better, but it stays light a little
 too long. LUV and LAB both hit the right lightness but LAB has a little more
-color. HCL works in the same vein as HSL (both cylindrical interpolations) but
+color. HCL works in the same vein as HSV (both cylindrical interpolations) but
 it does it right in that there is no green appearing and the lighthness changes
 in a linear manner.
 
