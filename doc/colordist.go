@@ -1,8 +1,7 @@
 package main
 
 import "fmt"
-//import "github.com/lucasb-eyer/go-colorful"
-import "go-colorful"
+import "github.com/lucasb-eyer/go-colorful"
 
 func main() {
     c1a := colorful.Color{150.0/255.0, 10.0/255.0, 150.0/255.0}
