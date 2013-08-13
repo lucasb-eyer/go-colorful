@@ -36,15 +36,22 @@ range slightly. For example, C\* of #0000ff is 1.338.
 
 Unit-tests are provided.
 
+Nice, but what's it useful for?
+-------------------------------
+
+- Converting color spaces. Some people like to do that.
+- Blending (interpolating) between colors in a "natural" look by using the right colorspace.
+- Generating random colors under some constraints (e.g. colors of the same shade, or shades of one color.)
+- Generating gorgeous random palettes with distinct colors of a same temperature.
+
 What not (yet)?
 ===============
 There are a few features which are currently missing and might be useful.
 I just haven't implemented them yet because I didn't have the need for it.
 Pull requests welcome.
 
-- Functions for palette generation. (This is in the making.)
 - Functions for computing distances in various spaces. Note that this seems to be [a whole science on its own](http://mmir.doc.ic.ac.uk/mmir2005/CameraReadyMissaoui.pdf).
-- Functions for interpolation.
+- Sorting colors (potentially using above mentioned distances)
 
 So which colorspace should I use?
 =================================
