@@ -230,6 +230,14 @@ func main() {
 }
 ```
 
+#### Generating color gradients
+A very common reason to blend colors is creating gradients. There is an example
+program in [doc/gradientgen.go](doc/gradientgen.go); it doesn't use any API
+which hasn't been used in the previous example code, so I won't bother pasting
+the code in here. Just look at that gorgeous gradient it generated in HCL space:
+
+!["Spectral" colorbrewer gradient in HCL space.](doc/gradientgen.png)
+
 ### Getting random colors
 It is sometimes necessary to generate random colors. You could simply do this
 on your own by generating colors with random values. By restricting the random

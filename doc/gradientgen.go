@@ -1,54 +1,39 @@
 package main
 
-import "fmt"
 import "github.com/lucasb-eyer/go-colorful"
 import "image"
 import "image/draw"
-// import "image/color"
 import "image/png"
-import "math"
 import "os"
+import "strconv"
 
+// This table contains the "keypoints" of the colorgradient you want to generate.
+// The position of each keypoint has to live in the range [0,1]
 type GradientTable []struct {
     Col colorful.Color
     Pos float64
 }
 
-func (self GradientTable) GetInerpolatedColorFor(t float64) colorful.Color {
+// This is the meat of the gradient computation. It returns a HCL-blend between
+// the two colors around `t`.
+// Note: It relies heavily on the fact that the gradient keypoints are sorted.
+func (self GradientTable) GetInterpolatedColorFor(t float64) colorful.Color {
     for i := 0 ; i < len(self) - 1 ; i++ {
         c1 := self[i]
         c2 := self[i+1]
         if c1.Pos <= t && t <= c2.Pos {
+            // We are in between c1 and c2. Go blend them!
             t := (t - c1.Pos)/(c2.Pos - c1.Pos)
             return c1.Col.BlendHcl(c2.Col, t).Clamped()
         }
     }
 
+    // Nothing found? Means we're at (or past) the last gradient keypoint.
     return self[len(self)-1].Col
 }
 
-func (self GradientTable) GetColorFor(t float64) colorful.Color {
-    for i := 0 ; i < len(self) - 1 ; i++ {
-        // Note: This relies on the fact that they are sorted from smallest to largest.
-        if t < (self[i].Pos + self[i+1].Pos)*0.5 {
-            return self[i].Col
-        }
-    }
-
-    return self[len(self)-1].Col
-}
-
-func savepng(img image.Image, fname string) {
-    toimg, err := os.Create(fname)
-    if err != nil {
-        fmt.Printf("Error: %v", err)
-        return
-    }
-    defer toimg.Close()
-
-    png.Encode(toimg, img)
-}
-
+// This is a very nice thing Golang forces you to do!
+// It is necessary so that we can write out the literal of the colortable below.
 func MustParseHex(s string) colorful.Color {
     c, err := colorful.Hex(s)
     if err != nil {
@@ -59,7 +44,7 @@ func MustParseHex(s string) colorful.Color {
 
 func main() {
     // The "keypoints" of the gradient.
-    colorbrewer_spectral := GradientTable{
+    keypoints := GradientTable{
         {MustParseHex("#9e0142"), 0.0},
         {MustParseHex("#d53e4f"), 0.1},
         {MustParseHex("#f46d43"), 0.2},
@@ -75,29 +60,25 @@ func main() {
 
     h := 1024
     w := 40
-    img_linear := image.NewRGBA(image.Rect(0,0,w,h))
-    img_square := image.NewRGBA(image.Rect(0,0,w,h))
-    img_sqroot := image.NewRGBA(image.Rect(0,0,w,h))
 
-    fmt.Println("const unsigned char _g_heatmap_colorscheme_colorbrewer_spectral_mixed_exp_data[] = {")
-    fmt.Println("0, 0, 0, 0,")
-    for y := h-1 ; y >= 0 ; y-- {
-        t := float64(y)/float64(h)
-        c1 := colorbrewer_spectral.GetInerpolatedColorFor(t)
-        c2 := colorbrewer_spectral.GetColorFor(t)
-        draw.Draw(img_linear, image.Rect(0, y, w, y+1), &image.Uniform{c1.BlendRgb(c2, 0.2)}, image.ZP, draw.Src)
-        c1 = colorbrewer_spectral.GetInerpolatedColorFor(t*t*t*t*t*t*t*t*t*t)
-        c2 = colorbrewer_spectral.GetColorFor(t*t*t*t*t*t*t*t*t*t)
-        draw.Draw(img_square, image.Rect(0, y, w, y+1), &image.Uniform{c1.BlendRgb(c2, 0.2)}, image.ZP, draw.Src)
-        r, g, b := c1.BlendRgb(c2, 0.2).RGB255()
-        fmt.Printf("%v, %v, %v, 255,\n", r, g, b)
-        c1 = colorbrewer_spectral.GetInerpolatedColorFor(math.Sqrt(t))
-        c2 = colorbrewer_spectral.GetColorFor(math.Sqrt(t))
-        draw.Draw(img_sqroot, image.Rect(0, y, w, y+1), &image.Uniform{c1.BlendRgb(c2, 0.2)}, image.ZP, draw.Src)
+    if len(os.Args) == 3 {
+        // Meh, I'm being lazy...
+        w, _ = strconv.Atoi(os.Args[1])
+        h, _ = strconv.Atoi(os.Args[2])
     }
-    fmt.Println("};")
 
-    savepng(img_linear, "gradient_linear.png")
-    savepng(img_square, "gradient_square.png")
-    savepng(img_sqroot, "gradient_sqroot.png")
+    img := image.NewRGBA(image.Rect(0,0,w,h))
+
+    for y := h-1 ; y >= 0 ; y-- {
+        c := keypoints.GetInterpolatedColorFor(float64(y)/float64(h))
+        draw.Draw(img, image.Rect(0, y, w, y+1), &image.Uniform{c}, image.ZP, draw.Src)
+    }
+
+    outpng, err := os.Create( "gradientgen.png")
+    if err != nil {
+        panic("Error storing png: " + err.Error())
+    }
+    defer outpng.Close()
+
+    png.Encode(outpng, img)
 }
