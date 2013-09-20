@@ -20,6 +20,14 @@ func (col Color) RGBA() (r, g, b, a uint32) {
     return
 }
 
+// Might come in handy sometimes to reduce boilerplate code.
+func (col Color) RGB255() (r, g, b uint8) {
+    r = uint8(col.R*255.0)
+    g = uint8(col.G*255.0)
+    b = uint8(col.B*255.0)
+    return
+}
+
 // This is the tolerance used when comparing colors using AlmostEqualRgb.
 const Delta = 1.0/255.0
 
