@@ -22,11 +22,12 @@ Go-Colorful stores colors in RGB and provides methods from converting these to v
 - **Hex RGB:** The "internet" color format, as in #FF00FF.
 - **Linear RGB:** See [gamma correct rendering](http://www.sjbrown.co.uk/2004/05/14/gamma-correct-rendering/).
 - **CIE-XYZ:** CIE's standard color space, almost in [0..1].
+- **CIE-xyY:** encodes chromacity in x and y and luminance in Y, all in [0..1]
 - **CIE-L\*a\*b\*:** A *perceptually uniform* color space, i.e. distances are meaningful. L\* in [0..1] and a\*, b\* almost in [-1..1].
 - **CIE-L\*u\*v\*:** Very similar to CIE-L\*a\*b\*, there is [no consensus](http://en.wikipedia.org/wiki/CIELUV#Historical_background) on which one is "better".
 - **CIE-L\*C\*h° (HCL):** This is generally the [most useful](http://vis4.net/blog/posts/avoid-equidistant-hsv-colors/) one; CIE-L\*a\*b\* space in polar coordinates, i.e. a *better* HSV. H° is in [0..360], C\* almost in [-1..1] and L\* as in CIE-L\*a\*b\*.
 
-For the colorspaces where it makes sense (XYZ, Lab), the
+For the colorspaces where it makes sense (XYZ, Lab, Luv, HCl), the
 [D65](http://en.wikipedia.org/wiki/Illuminant_D65) is used as reference white
 by default but methods for using your own reference white are provided.
 
@@ -89,6 +90,7 @@ c := colorful.Color{0.313725, 0.478431, 0.721569}
 c := colorful.Hex("#517AB8")
 c := colorful.Hsv(216.0, 0.56, 0.722)
 c := colorful.Xyz(0.189165, 0.190837, 0.480248)
+c := colorful.Xyy(0.219895, 0.221839, 0.190837)
 c := colorful.Lab(0.507850, 0.040585,-0.370945)
 c := colorful.Luv(0.507849,-0.194172,-0.567924)
 c := colorful.Hcl(276.2440, 0.373160, 0.507849)
@@ -101,10 +103,15 @@ And then converting this color back into various color spaces:
 hex := c.Hex()
 h, s, v := c.Hsv()
 x, y, z := c.Xyz()
+x, y, Y := c.Xyy()
 l, a, b := c.Lab()
 l, u, v := c.Luv()
 h, c, l := c.Hcl()
 ```
+
+Note that, because of Go's unfortunate choice of requiring an initial uppercase,
+the name of the functions relating to the xyY space are just off. If you have
+any good suggestion, please open an issue. (I don't consider XyY good.)
 
 ### Comparing colors
 In the RGB color space, the Euclidian distance between colors *doesn't* correspond

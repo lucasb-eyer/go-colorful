@@ -252,6 +252,67 @@ func Xyz(x, y, z float64) Color {
     return LinearRgb(XyzToLinearRgb(x, y, z))
 }
 
+/// xyY ///
+///////////
+// http://www.brucelindbloom.com/Eqn_XYZ_to_xyY.html
+
+// Well, the name is bad, since it's xyY but Golang needs me to start with a
+// capital letter to make the method public.
+func XyzToXyy(X, Y, Z float64) (x, y, Yout float64) {
+    return XyzToXyyWhiteRef(X, Y, Z, D65)
+}
+
+func XyzToXyyWhiteRef(X, Y, Z float64, wref [3]float64) (x, y, Yout float64) {
+    Yout = Y
+    N := X + Y + Z
+    if math.Abs(N) < 1e-14 {
+        // When we have black, Bruce Lindbloom recommends to use
+        // the reference white's chromacity for x and y.
+        x = wref[0] / (wref[0] + wref[1] + wref[2])
+        y = wref[1] / (wref[0] + wref[1] + wref[2])
+    } else {
+        x = X / N
+        y = Y / N
+    }
+    return
+}
+
+func XyyToXyz(x, y, Y float64) (X, Yout, Z float64) {
+    Yout = Y
+
+    if -1e-14 < y && y < 1e-14 {
+        X = 0.0
+        Z = 0.0
+    } else {
+        X = Y / y * x
+        Z = Y / y * (1.0 - x - y)
+    }
+
+    return
+}
+
+// Converts the given color to CIE xyY space using D65 as reference white.
+// (Note that the reference white is only used for black input.)
+// x, y and Y are in [0..1]
+func (col Color) Xyy() (x, y, Y float64) {
+    return XyzToXyy(col.Xyz())
+}
+
+// Converts the given color to CIE xyY space, taking into account
+// a given reference white. (i.e. the monitor's white)
+// (Note that the reference white is only used for black input.)
+// x, y and Y are in [0..1]
+func (col Color) XyyWhiteRef(wref [3]float64) (x, y, Y float64) {
+    X, Y2, Z := col.Xyz()
+    return XyzToXyyWhiteRef(X, Y2, Z, wref)
+}
+
+// Generates a color by using data given in CIE xyY space.
+// x, y and Y are in [0..1]
+func Xyy(x, y, Y float64) Color {
+    return Xyz(XyyToXyz(x, y, Y))
+}
+
 /// L*a*b* ///
 //////////////
 // http://en.wikipedia.org/wiki/Lab_color_space#CIELAB-CIEXYZ_conversions
