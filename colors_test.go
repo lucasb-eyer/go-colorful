@@ -49,6 +49,28 @@ var vals = []struct{
     {Color{0.0, 0.0, 0.0}, [3]float64{  0.0, 0.0, 0.0}, "#000000", [3]float64{0.000000, 0.000000, 0.000000}, [3]float64{0.312727, 0.329023, 0.000000}, [3]float64{0.000000, 0.000000, 0.000000}, [3]float64{0.000000, 0.000000, 0.000000}, [3]float64{0.00000, 0.00000, 0.00000}, [3]float64{0.00000, 0.00000, 0.00000}, [3]float64{  0.0000, 0.000000, 0.000000}, [3]float64{  0.0000, 0.000000, 0.000000}},
 }
 
+// For testing short-hex values, since the above contains '80' values.
+var shorthexvals = []struct{
+    c     Color
+    hex   string
+}{
+    {Color{1.0, 1.0, 1.0}, "#fff"},
+    {Color{0.6, 1.0, 1.0}, "#9ff"},
+    {Color{1.0, 0.6, 1.0}, "#f9f"},
+    {Color{1.0, 1.0, 0.6}, "#ff9"},
+    {Color{0.6, 0.6, 1.0}, "#99f"},
+    {Color{1.0, 0.6, 0.6}, "#f99"},
+    {Color{0.6, 1.0, 0.6}, "#9f9"},
+    {Color{0.6, 0.6, 0.6}, "#999"},
+    {Color{0.0, 1.0, 1.0}, "#0ff"},
+    {Color{1.0, 0.0, 1.0}, "#f0f"},
+    {Color{1.0, 1.0, 0.0}, "#ff0"},
+    {Color{0.0, 0.0, 1.0}, "#00f"},
+    {Color{0.0, 1.0, 0.0}, "#0f0"},
+    {Color{1.0, 0.0, 0.0}, "#f00"},
+    {Color{0.0, 0.0, 0.0}, "#000"},
+}
+
 /// HSV ///
 ///////////
 
@@ -87,6 +109,24 @@ func TestHEXCreation(t *testing.T) {
         c, err := Hex(strings.ToUpper(tt.hex))
         if err != nil || !c.AlmostEqualRgb(tt.c) {
             t.Errorf("%v. HEX(%v) => (%v), want %v (delta %v)", i, strings.ToUpper(tt.hex), c, tt.c, delta)
+        }
+    }
+}
+
+func TestShortHexCreation(t *testing.T) {
+    for i, tt := range shorthexvals {
+        c, err := Hex(tt.hex)
+        if err != nil || !c.AlmostEqualRgb(tt.c) {
+            t.Errorf("%v. Hex(%v) => (%v), want %v (delta %v)", i, tt.hex, c, tt.c, delta)
+        }
+    }
+}
+
+func TestShortHEXCreation(t *testing.T) {
+    for i, tt := range shorthexvals {
+        c, err := Hex(strings.ToUpper(tt.hex))
+        if err != nil || !c.AlmostEqualRgb(tt.c) {
+            t.Errorf("%v. Hex(%v) => (%v), want %v (delta %v)", i, strings.ToUpper(tt.hex), c, tt.c, delta)
         }
     }
 }
