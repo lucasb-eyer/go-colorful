@@ -510,6 +510,28 @@ func (c1 Color) DistanceLab(c2 Color) float64 {
     return math.Sqrt(sq(l1-l2) + sq(a1-a2) + sq(b1-b2))
 }
 
+// Uses the CIE94 formula to calculate color distance. More accurate than
+// DistanceLab, but also more work.
+func (cl Color) DistanceCIE94(cr Color) float64 {
+	l1, a1, b1 := cl.Lab()
+	l2, a2, b2 := cr.Lab()
+    
+	kl := 1.0
+	k1 := 0.045
+	k2 := 0.015
+
+	deltaL := l1 - l2
+	c1 := math.Sqrt(sq(a1) + sq(b1))
+	c2 := math.Sqrt(sq(a2) + sq(b2))
+	deltaCab := c1 - c2
+	deltaHab := math.Sqrt(sq(a1-a2) + sq(b1-b2) - sq(deltaCab))
+	sl := 1.0
+	sc := 1.0 + k1*c1
+	sh := 1.0 + k2*c1
+
+	return math.Sqrt(sq(deltaL/(kl*sl)) + sq(deltaCab/sc) + sq(deltaHab/sh))
+}
+
 // BlendLab blends two colors in the L*a*b* color-space, which should result in a smoother blend.
 // t == 0 results in c1, t == 1 results in c2
 func (c1 Color) BlendLab(c2 Color, t float64) Color {
