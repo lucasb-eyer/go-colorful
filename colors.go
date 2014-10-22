@@ -152,6 +152,124 @@ func (c1 Color) BlendHsv(c2 Color, t float64) Color {
     return Hsv(H, s1 + t*(s2 - s1), v1 + t*(v2 - v1))
 }
 
+/// HSL ///
+///////////
+
+// Hsl returns the Hue [0..360], Saturation [0..1], and Luminance (lightness) [0..1] of the color.
+func (col Color) Hsl() (h, s, l float64) {
+    min := math.Min(math.Min(col.R, col.G), col.B)
+    max := math.Max(math.Max(col.R, col.G), col.B)
+
+    l = (max + min) / 2
+
+    if min == max {
+        s = 0
+        h = 0
+    } else {
+        if l < 0.5 {
+            s = (max - min) / (max + min)
+        } else {
+            s = (max - min) / (2.0 - max - min)
+        }
+
+        if max == col.R {
+            h = (col.G - col.B) / (max - min)
+        } else if max == col.G {
+            h = 2.0 + (col.B-col.R)/(max-min)
+        } else {
+            h = 4.0 + (col.R-col.G)/(max-min)
+        }
+
+        h *= 60
+
+        if h < 0 {
+            h += 360
+        }
+    }
+
+    return
+}
+
+// Hsl creates a new Color given a Hue in [0..360], a Saturation [0..1], and a Luminance (lightness) in [0..1]
+func Hsl(h, s, l float64) Color {
+    if s == 0 {
+        return Color{l, l, l}
+    }
+
+    var r, g, b float64
+    var t1 float64
+    var t2 float64
+    var tr float64
+    var tg float64
+    var tb float64
+
+    if l < 0.5 {
+        t1 = l * (1.0 + s)
+    } else {
+        t1 = l + s - l*s
+    }
+
+    t2 = 2*l - t1
+    h = h / 360
+    tr = h + 1.0/3.0
+    tg = h
+    tb = h - 1.0/3.0
+
+    if tr < 0 {
+        tr += 1
+    }
+    if tr > 1 {
+        tr -= 1
+    }
+    if tg < 0 {
+        tg += 1
+    }
+    if tg > 1 {
+        tg -= 1
+    }
+    if tb < 0 {
+        tb += 1
+    }
+    if tb > 1 {
+        tb -= 1
+    }
+
+    // Red
+    if 6*tr < 1 {
+        r = t2 + (t1-t2)*6*tr
+    } else if 2*tr < 1 {
+        r = t1
+    } else if 3*tr < 2 {
+        r = t2 + (t1-t2)*(2.0/3.0-tr)*6
+    } else {
+        r = t2
+    }
+
+    // Green
+    if 6*tg < 1 {
+        g = t2 + (t1-t2)*6*tg
+    } else if 2*tg < 1 {
+        g = t1
+    } else if 3*tg < 2 {
+        g = t2 + (t1-t2)*(2.0/3.0-tg)*6
+    } else {
+        g = t2
+    }
+
+    // Blue
+    if 6*tb < 1 {
+        b = t2 + (t1-t2)*6*tb
+    } else if 2*tb < 1 {
+        b = t1
+    } else if 3*tb < 2 {
+        b = t2 + (t1-t2)*(2.0/3.0-tb)*6
+    } else {
+        b = t2
+    }
+
+    return Color{r, g, b}
+}
+
 /// Hex ///
 ///////////
 
@@ -392,6 +510,28 @@ func (c1 Color) DistanceLab(c2 Color) float64 {
     l1, a1, b1 := c1.Lab()
     l2, a2, b2 := c2.Lab()
     return math.Sqrt(sq(l1-l2) + sq(a1-a2) + sq(b1-b2))
+}
+
+// Uses the CIE94 formula to calculate color distance. More accurate than
+// DistanceLab, but also more work.
+func (cl Color) DistanceCIE94(cr Color) float64 {
+	l1, a1, b1 := cl.Lab()
+	l2, a2, b2 := cr.Lab()
+    
+	kl := 1.0
+	k1 := 0.045
+	k2 := 0.015
+
+	deltaL := l1 - l2
+	c1 := math.Sqrt(sq(a1) + sq(b1))
+	c2 := math.Sqrt(sq(a2) + sq(b2))
+	deltaCab := c1 - c2
+	deltaHab := math.Sqrt(sq(a1-a2) + sq(b1-b2) - sq(deltaCab))
+	sl := 1.0
+	sc := 1.0 + k1*c1
+	sh := 1.0 + k2*c1
+
+	return math.Sqrt(sq(deltaL/(kl*sl)) + sq(deltaCab/sc) + sq(deltaHab/sh))
 }
 
 // BlendLab blends two colors in the L*a*b* color-space, which should result in a smoother blend.
