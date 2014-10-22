@@ -394,6 +394,11 @@ func (c1 Color) DistanceLab(c2 Color) float64 {
     return math.Sqrt(sq(l1-l2) + sq(a1-a2) + sq(b1-b2))
 }
 
+// That's actually the same, but I don't want to break code.
+func (c1 Color) DistanceCIE76(c2 Color) float64 {
+    return c1.DistanceLab(c2)
+}
+
 // Uses the CIE94 formula to calculate color distance. More accurate than
 // DistanceLab, but also more work.
 func (cl Color) DistanceCIE94(cr Color) float64 {
