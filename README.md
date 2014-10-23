@@ -9,7 +9,7 @@ One such detail popped up during the development of [Memory Which Does Not Suck]
 when we wanted the server to assign the players random colors. Sometimes
 two players got very similar colors, which bugged me. The very same evening,
 [I want hue](http://tools.medialab.sciences-po.fr/iwanthue/) was the top post
-on HackerNews' frontpage and showed me how to Do It Right (tm). Last but not
+on HackerNews' frontpage and showed me how to Do It Right™. Last but not
 least, there was no library for handling color spaces available in go. Colorful
 does just that and implements Go's color.Color interface.
 
@@ -140,9 +140,11 @@ func main() {
     c2a := colorful.Color{10.0/255.0, 150.0/255.0, 50.0/255.0}
     c2b := colorful.Color{99.9/255.0, 150.0/255.0, 10.0/255.0}
 
-    fmt.Printf("DistanceRgb: c1: %v and c2: %v\n", c1a.DistanceRgb(c1b), c2a.DistanceRgb(c2b))
-    fmt.Printf("DistanceLab: c1: %v and c2: %v\n", c1a.DistanceLab(c1b), c2a.DistanceLab(c2b))
-    fmt.Printf("DistanceLuv: c1: %v and c2: %v\n", c1a.DistanceLuv(c1b), c2a.DistanceLuv(c2b))
+    fmt.Printf("DistanceRgb:   c1: %v\tand c2: %v\n", c1a.DistanceRgb(c1b), c2a.DistanceRgb(c2b))
+    fmt.Printf("DistanceLab:   c1: %v\tand c2: %v\n", c1a.DistanceLab(c1b), c2a.DistanceLab(c2b))
+    fmt.Printf("DistanceLuv:   c1: %v\tand c2: %v\n", c1a.DistanceLuv(c1b), c2a.DistanceLuv(c2b))
+    fmt.Printf("DistanceCIE76: c1: %v\tand c2: %v\n", c1a.DistanceCIE76(c1b), c2a.DistanceCIE76(c2b))
+    fmt.Printf("DistanceCIE94: c1: %v\tand c2: %v\n", c1a.DistanceCIE94(c1b), c2a.DistanceCIE94(c2b))
 }
 ```
 
@@ -150,10 +152,16 @@ Running the above program shows that you should always prefer any of the CIE dis
 
 ```bash
 $ go run colordist.go
-DistanceRgb: c1: 0.3803921568627451 and c2: 0.3858713931171159
-DistanceLab: c1: 0.32048907700713997 and c2: 0.24397304315853596
-DistanceLuv: c1: 0.513456934258258 and c2: 0.2568727826318425
+DistanceRgb:   c1: 0.3803921568627451   and c2: 0.3858713931171159
+DistanceLab:   c1: 0.3204845831279805   and c2: 0.2439715175856528
+DistanceLuv:   c1: 0.5134369614199698   and c2: 0.25686928398606323
+DistanceCIE76: c1: 0.3204845831279805   and c2: 0.2439715175856528
+DistanceCIE94: c1: 0.31730280878910067  and c2: 0.24150613806134172
 ```
+
+It also shows that `DistanceLab` is more formally known as `DistanceCIE76` and
+has been superseded by the slightly more accurate, but much more expensive
+`DistanceCIE94`.
 
 Note that `AlmostEqualRgb` is provided mainly for (unit-)testing purposes. Use
 it only if you really know what you're doing. It will eat your cat.
@@ -360,6 +368,12 @@ FAQ
 ### Q: I get all f!@#ed up values! Your library sucks!
 A: You probably provided values in the wrong range. For example, RGB values are
 expected to reside between 0 and 1, *not* between 0 and 255. Normalize your colors.
+
+Who?
+====
+
+This library has been developed by Lucas Beyer with contributions from
+Bastien Dejean (@baskerville) and Phil Kulak (@pkulak).
 
 License: MIT
 ============
