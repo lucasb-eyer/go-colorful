@@ -89,8 +89,7 @@ Create a beautiful blue color using different source space:
 c := colorful.Color{0.313725, 0.478431, 0.721569}
 c, err := colorful.Hex("#517AB8")
 if err != nil{
-	log.Fatal(err)
-	os.Exit(1)
+    log.Fatal(err)
 }
 c = colorful.Hsv(216.0, 0.56, 0.722)
 c = colorful.Xyz(0.189165, 0.190837, 0.480248)
