@@ -87,14 +87,17 @@ Create a beautiful blue color using different source space:
 ```go
 // Any of the following should be the same
 c := colorful.Color{0.313725, 0.478431, 0.721569}
-c := colorful.Hex("#517AB8")
-c := colorful.Hsv(216.0, 0.56, 0.722)
-c := colorful.Xyz(0.189165, 0.190837, 0.480248)
-c := colorful.Xyy(0.219895, 0.221839, 0.190837)
-c := colorful.Lab(0.507850, 0.040585,-0.370945)
-c := colorful.Luv(0.507849,-0.194172,-0.567924)
-c := colorful.Hcl(276.2440, 0.373160, 0.507849)
-Printf("RGB values: %v, %v, %v", c.R, c.G, c.B)
+c, err := colorful.Hex("#517AB8")
+if err != nil{
+    log.Fatal(err)
+}
+c = colorful.Hsv(216.0, 0.56, 0.722)
+c = colorful.Xyz(0.189165, 0.190837, 0.480248)
+c = colorful.Xyy(0.219895, 0.221839, 0.190837)
+c = colorful.Lab(0.507850, 0.040585,-0.370945)
+c = colorful.Luv(0.507849,-0.194172,-0.567924)
+c = colorful.Hcl(276.2440, 0.373160, 0.507849)
+fmt.Printf("RGB values: %v, %v, %v", c.R, c.G, c.B)
 ```
 
 And then converting this color back into various color spaces:
