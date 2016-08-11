@@ -18,7 +18,8 @@ What?
 Go-Colorful stores colors in RGB and provides methods from converting these to various color-spaces. Currently supported colorspaces are:
 
 - **RGB:** All three of Red, Green and Blue in [0..1].
-- **HSV:** Hue in [0..360], Saturation and Value in [0..1]. You probably shouldn't use this.
+- **HSL:** Hue in [0..360], Saturation and Luminance in [0..1]. For legacy reasons; please forget that it exists.
+- **HSV:** Hue in [0..360], Saturation and Value in [0..1]. You're better off using HCL, see below.
 - **Hex RGB:** The "internet" color format, as in #FF00FF.
 - **Linear RGB:** See [gamma correct rendering](http://www.sjbrown.co.uk/2004/05/14/gamma-correct-rendering/).
 - **CIE-XYZ:** CIE's standard color space, almost in [0..1].
