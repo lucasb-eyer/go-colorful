@@ -6,13 +6,18 @@ import (
     "testing"
 )
 
+// Checks whether the relative error is below eps
+func almosteq_eps(v1, v2, eps float64) bool {
+    if math.Abs(v1) > delta {
+        return math.Abs((v1 - v2)/v1) < eps
+    }
+    return true
+}
+
 // Checks whether the relative error is below the 8bit RGB delta, which should be good enough.
 const delta = 1.0/256.0
 func almosteq(v1, v2 float64) bool {
-    if math.Abs(v1) > delta {
-        return math.Abs((v1 - v2)/v1) < delta
-    }
-    return true
+    return almosteq_eps(v1, v2, delta)
 }
 
 // Note: the XYZ, L*a*b*, etc. are using D65 white and D50 white if postfixed by "50".
@@ -383,3 +388,53 @@ func TestIssue11(t *testing.T) {
     }
 }
 
+// For testing angular interpolation internal function
+// NOTE: They are being tested in both directions.
+var anglevals = []struct{
+    a0 float64
+    a1 float64
+    t  float64
+    at float64
+}{
+    {  0.0,   1.0, 0.0 ,   0.0 },
+    {  0.0,   1.0, 0.25,   0.25},
+    {  0.0,   1.0, 0.5 ,   0.5 },
+    {  0.0,   1.0, 1.0 ,   1.0 },
+    {  0.0,  90.0, 0.0 ,   0.0},
+    {  0.0,  90.0, 0.25,  22.5},
+    {  0.0,  90.0, 0.5 ,  45.0},
+    {  0.0,  90.0, 1.0 ,  90.0},
+    {  0.0, 178.0, 0.0 ,   0.0},  // Exact 0-180 is ambiguous.
+    {  0.0, 178.0, 0.25,  44.5},
+    {  0.0, 178.0, 0.5 ,  89.0},
+    {  0.0, 178.0, 1.0 , 178.0},
+    {  0.0, 182.0, 0.0 ,   0.0},  // Exact 0-180 is ambiguous.
+    {  0.0, 182.0, 0.25, 315.5},
+    {  0.0, 182.0, 0.5 , 271.0},
+    {  0.0, 182.0, 1.0 , 182.0},
+    {  0.0, 270.0, 0.0 ,   0.0},
+    {  0.0, 270.0, 0.25, 337.5},
+    {  0.0, 270.0, 0.5 , 315.0},
+    {  0.0, 270.0, 1.0 , 270.0},
+    {  0.0, 359.0, 0.0 ,   0.0 },
+    {  0.0, 359.0, 0.25, 359.75},
+    {  0.0, 359.0, 0.5 , 359.5 },
+    {  0.0, 359.0, 1.0 , 359.0 },
+}
+
+func TestInterpolation(t *testing.T) {
+    // Forward
+    for i, tt := range anglevals {
+        res := interp_angle(tt.a0, tt.a1, tt.t)
+        if !almosteq_eps(res, tt.at, 1e-15) {
+            t.Errorf("%v. interp_angle(%v, %v, %v) => (%v), want %v", i, tt.a0, tt.a1, tt.t, res, tt.at)
+        }
+    }
+    // Backward
+    for i, tt := range anglevals {
+        res := interp_angle(tt.a1, tt.a0, 1.0 - tt.t)
+        if !almosteq_eps(res, tt.at, 1e-15) {
+            t.Errorf("%v. interp_angle(%v, %v, %v) => (%v), want %v", i, tt.a1, tt.a0, 1.0 - tt.t, res, tt.at)
+        }
+    }
+}
