@@ -325,3 +325,61 @@ func TestHclWhiteRefConversion(t *testing.T) {
     }
 }
 
+
+/// Issues raised on github ///
+///////////////////////////////
+
+// https://github.com/lucasb-eyer/go-colorful/issues/11
+func TestIssue11(t *testing.T) {
+    c1hex := "#1a1a46"
+    c2hex := "#666666"
+
+    c1, _ := Hex(c1hex)
+    c2, _ := Hex(c2hex)
+
+    blend := c1.BlendHsv(c2, 0).Hex()
+    if blend != c1hex {
+        t.Errorf("Issue11: %v --Hsv-> %v = %v, want %v", c1hex, c2hex, blend, c1hex)
+    }
+    blend = c1.BlendHsv(c2, 1).Hex()
+    if blend != c2hex {
+        t.Errorf("Issue11: %v --Hsv-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
+    }
+
+    blend = c1.BlendLuv(c2, 0).Hex()
+    if blend != c1hex {
+        t.Errorf("Issue11: %v --Luv-> %v = %v, want %v", c1hex, c2hex, blend, c1hex)
+    }
+    blend = c1.BlendLuv(c2, 1).Hex()
+    if blend != c2hex {
+        t.Errorf("Issue11: %v --Luv-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
+    }
+
+    blend = c1.BlendRgb(c2, 0).Hex()
+    if blend != c1hex {
+        t.Errorf("Issue11: %v --Rgb-> %v = %v, want %v", c1hex, c2hex, blend, c1hex)
+    }
+    blend = c1.BlendRgb(c2, 1).Hex()
+    if blend != c2hex {
+        t.Errorf("Issue11: %v --Rgb-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
+    }
+
+    blend = c1.BlendLab(c2, 0).Hex()
+    if blend != c1hex {
+        t.Errorf("Issue11: %v --Lab-> %v = %v, want %v", c1hex, c2hex, blend, c1hex)
+    }
+    blend = c1.BlendLab(c2, 1).Hex()
+    if blend != c2hex {
+        t.Errorf("Issue11: %v --Lab-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
+    }
+
+    blend = c1.BlendHcl(c2, 0).Hex()
+    if blend != c1hex {
+        t.Errorf("Issue11: %v --Hcl-> %v = %v, want %v", c1hex, c2hex, blend, c1hex)
+    }
+    blend = c1.BlendHcl(c2, 1).Hex()
+    if blend != c2hex {
+        t.Errorf("Issue11: %v --Hcl-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
+    }
+}
+

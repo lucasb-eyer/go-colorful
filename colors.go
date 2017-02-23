@@ -82,6 +82,14 @@ func (c1 Color) BlendRgb(c2 Color, t float64) Color {
                  c1.B + t*(c2.B - c1.B)}
 }
 
+// Utility used by Hxx color-spaces for interpolating between two angles in [0,360].
+func interp_angle(a0, a1, t float64) float64 {
+    // Based on the answer here: http://stackoverflow.com/a/14498790/2366315
+    // With potential proof that it works here: http://math.stackexchange.com/a/2144499
+    delta := math.Mod(math.Mod(a1 - a0, 360.0) + 540, 360.0) - 180.0
+    return math.Mod(a0 + t*delta + 360.0, 360.0)
+}
+
 
 /// HSV ///
 ///////////
@@ -137,19 +145,7 @@ func (c1 Color) BlendHsv(c2 Color, t float64) Color {
     h2, s2, v2 := c2.Hsv()
 
     // We know that h are both in [0..360]
-    var H float64
-    if math.Abs(h2 - h1) <= 180.0 {
-        // Won't wrap
-        H = h1 + t*(h2-h1)
-    } else if h1 < h2 {
-        // Will wrap
-        H = math.Mod(h1 + 360.0 + t*(h2 - h1 - 360.0), 360.0)
-    } else {
-        // Will wrap
-        H = math.Mod(h2 + 360.0 + t*(h1 - h2 - 360.0), 360.0)
-    }
-
-    return Hsv(H, s1 + t*(s2 - s1), v1 + t*(v2 - v1))
+    return Hsv(interp_angle(h1, h2, t), s1 + t*(s2 - s1), v1 + t*(v2 - v1))
 }
 
 /// HSL ///
@@ -719,17 +715,5 @@ func (col1 Color) BlendHcl(col2 Color, t float64) Color {
     h2, c2, l2 := col2.Hcl()
 
     // We know that h are both in [0..360]
-    var H float64
-    if math.Abs(h2 - h1) <= 180.0 {
-        // Won't wrap
-        H = h1 + t*(h2-h1)
-    } else if h1 < h2 {
-        // Will wrap
-        H = math.Mod(h1 + 360.0 + t*(h2 - h1 - 360.0), 360.0)
-    } else {
-        // Will wrap
-        H = math.Mod(h2 + 360.0 + t*(h1 - h2 - 360.0), 360.0)
-    }
-
-    return Hcl(H, c1 + t*(c2 - c1), l1 + t*(l2 - l1))
+    return Hcl(interp_angle(h1, h2, t), c1 + t*(c2 - c1), l1 + t*(l2 - l1))
 }
