@@ -3,6 +3,7 @@ go-colorful
 A library for playing with colors in go (golang).
 
 [![Build Status](https://travis-ci.org/lucasb-eyer/go-colorful.svg?branch=master)](https://travis-ci.org/lucasb-eyer/go-colorful)
+[![Coverage Status](https://coveralls.io/repos/github/lucasb-eyer/go-colorful/badge.svg?branch=master)](https://coveralls.io/github/lucasb-eyer/go-colorful?branch=master)
 
 Why?
 ====

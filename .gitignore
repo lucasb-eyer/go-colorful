@@ -23,3 +23,6 @@ _cgo_export.*
 _testmain.go
 
 *.exe
+
+# Code coverage stuff
+coverage.out
