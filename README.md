@@ -2,6 +2,8 @@ go-colorful
 ===========
 A library for playing with colors in go (golang).
 
+[![Build Status](https://travis-ci.org/lucasb-eyer/go-colorful.svg?branch=master)](https://travis-ci.org/lucasb-eyer/go-colorful)
+
 Why?
 ====
 I love games. I make games. I love detail and I get lost in detail.
