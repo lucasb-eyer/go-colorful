@@ -55,7 +55,6 @@ There are a few features which are currently missing and might be useful.
 I just haven't implemented them yet because I didn't have the need for it.
 Pull requests welcome.
 
-- Functions for computing distances in various spaces. Note that this seems to be [a whole science on its own](http://mmir.doc.ic.ac.uk/mmir2005/CameraReadyMissaoui.pdf).
 - Sorting colors (potentially using above mentioned distances)
 
 So which colorspace should I use?
@@ -163,7 +162,7 @@ DistanceRgb:   c1: 0.3803921568627451   and c2: 0.3858713931171159
 DistanceLab:   c1: 0.3204845831279805   and c2: 0.2439715175856528
 DistanceLuv:   c1: 0.5134369614199698   and c2: 0.25686928398606323
 DistanceCIE76: c1: 0.3204845831279805   and c2: 0.2439715175856528
-DistanceCIE94: c1: 0.31730280878910067  and c2: 0.24150613806134172
+DistanceCIE94: c1: 0.19799168128511327  and c2: 0.12207136371167401
 ```
 
 It also shows that `DistanceLab` is more formally known as `DistanceCIE76` and

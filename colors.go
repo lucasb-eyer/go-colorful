@@ -519,20 +519,35 @@ func (cl Color) DistanceCIE94(cr Color) float64 {
     l1, a1, b1 := cl.Lab()
     l2, a2, b2 := cr.Lab()
 
-    kl := 1.0
-    k1 := 0.045
-    k2 := 0.015
+    // NOTE: Since all those formulas expect L,a,b values 100x larger than we
+    //       have them in this library, we either need to adjust all constants
+    //       in the formula, or convert the ranges of L,a,b before, and then
+    //       scale the distances down again. The latter is less error-prone.
+    l1, a1, b1 = l1*100.0, a1*100.0, b1*100.0
+    l2, a2, b2 = l2*100.0, a2*100.0, b2*100.0
+
+    kl := 1.0  // 2.0 for textiles
+    kc := 1.0
+    kh := 1.0
+    k1 := 0.045  // 0.048 for textiles
+    k2 := 0.015  // 0.014 for textiles.
 
     deltaL := l1 - l2
     c1 := math.Sqrt(sq(a1) + sq(b1))
     c2 := math.Sqrt(sq(a2) + sq(b2))
     deltaCab := c1 - c2
-    deltaHab := math.Sqrt(sq(a1-a2) + sq(b1-b2) - sq(deltaCab))
+
+    // Not taking Sqrt here for stability, and it's unnecessary.
+    deltaHab2 := sq(a1-a2) + sq(b1-b2) - sq(deltaCab)
     sl := 1.0
     sc := 1.0 + k1*c1
     sh := 1.0 + k2*c1
 
-    return math.Sqrt(sq(deltaL/(kl*sl)) + sq(deltaCab/sc) + sq(deltaHab/sh))
+    vL2 := sq(deltaL/(kl*sl))
+    vC2 := sq(deltaCab/(kc*sc))
+    vH2 := deltaHab2/sq(kh*sh)
+
+    return math.Sqrt(vL2 + vC2 + vH2)*0.01  // See above.
 }
 
 // BlendLab blends two colors in the L*a*b* color-space, which should result in a smoother blend.

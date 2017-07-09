@@ -358,6 +358,59 @@ func TestHclWhiteRefConversion(t *testing.T) {
 }
 
 
+/// Test distances ///
+//////////////////////
+
+// Ground-truth from http://www.brucelindbloom.com/index.html?ColorDifferenceCalcHelp.html
+var dists = []struct{
+    c1   Color
+    c2   Color
+    d76  float64  // That's also dLab
+    d94  float64
+}{
+    {Color{1.0, 1.0, 1.0}, Color{1.0, 1.0, 1.0}, 0.0, 0.0},
+    {Color{0.0, 0.0, 0.0}, Color{0.0, 0.0, 0.0}, 0.0, 0.0},
+
+    // Just pairs of values of the table way above.
+    {Lab(1.000000, 0.000000, 0.000000), Lab(0.931390,-0.353319,-0.108946), 0.37604638, 0.37604638},
+    {Lab(0.720892, 0.651673,-0.422133), Lab(0.977637,-0.165795, 0.602017), 1.33531088, 0.65466377},
+    {Lab(0.590453, 0.332846,-0.637099), Lab(0.681085, 0.483884, 0.228328), 0.88317072, 0.42541075},
+    {Lab(0.906026,-0.600870, 0.498993), Lab(0.533890, 0.000000, 0.000000), 0.86517280, 0.41038323},
+    {Lab(0.911132,-0.480875,-0.141312), Lab(0.603242, 0.982343,-0.608249), 1.56647162, 0.87431457},
+    {Lab(0.971393,-0.215537, 0.944780), Lab(0.322970, 0.791875,-1.078602), 2.35146891, 1.11858192},
+    {Lab(0.877347,-0.861827, 0.831793), Lab(0.532408, 0.800925, 0.672032), 1.70565338, 0.68800270},
+}
+
+func TestLabDistance(t *testing.T) {
+    for i, tt := range dists {
+        d := tt.c1.DistanceCIE76(tt.c2)
+        if !almosteq(d, tt.d76) {
+            t.Errorf("%v. %v.DistanceCIE76(%v) => (%v), want %v (delta %v)", i, tt.c1, tt.c2, d, tt.d76, delta)
+        }
+    }
+}
+
+func TestCIE94Distance(t *testing.T) {
+    for i, tt := range dists {
+        d := tt.c1.DistanceCIE94(tt.c2)
+        if !almosteq(d, tt.d94) {
+            t.Errorf("%v. %v.DistanceCIE94(%v) => (%v), want %v (delta %v)", i, tt.c1, tt.c2, d, tt.d94, delta)
+        }
+    }
+}
+
+/// Test utilities ///
+//////////////////////
+
+func TestClamp(t *testing.T) {
+    c_orig := Color{1.1, -0.1, 0.5}
+    c_want := Color{1.0, 0.0, 0.5}
+    if c_orig.Clamped() != c_want {
+        t.Errorf("%v.Clamped() => %v, want %v", c_orig, c_orig.Clamped(), c_want)
+    }
+}
+
+
 /// Issues raised on github ///
 ///////////////////////////////
 
