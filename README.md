@@ -375,6 +375,27 @@ FAQ
 A: You probably provided values in the wrong range. For example, RGB values are
 expected to reside between 0 and 1, *not* between 0 and 255. Normalize your colors.
 
+### Q: Lab/Luv/HCl seem broken! Your library sucks!
+They look like this:
+
+<img height="150" src="https://user-images.githubusercontent.com/3779568/28646900-6548040c-7264-11e7-8f12-81097a97c260.png">
+
+A: You're likely trying to generate and display colors that can't be represented by RGB,
+and thus monitors. When you're trying to convert, say, `HCL(190.0, 1.0, 1.0).RGB255()`,
+you're asking for RGB values of `(-2105.254  300.680  286.185)`, which clearly don't exist,
+and the `RGB255` function just casts these numbers to `uint8`, creating wrap-around and
+what looks like a completely broken gradient. What you want to do, is either use more
+reasonable values of colors which actually exist in RGB, or just `Clamp()` the resulting
+color to its nearest existing one, living with the consequences:
+`HCL(190.0, 1.0, 1.0).Clamp().RGB255()`. It will look something like this:
+
+<img height="150" src="https://user-images.githubusercontent.com/1476029/29596343-9a8c62c6-8771-11e7-9026-b8eb8852cc4a.png">
+
+[Here's an issue going in-depth about this](https://github.com/lucasb-eyer/go-colorful/issues/14),
+as well as [my answer](https://github.com/lucasb-eyer/go-colorful/issues/14#issuecomment-324205385),
+both with code and pretty pictures. Also note that this was somewhat covered above in the
+["Blending colors" section](https://github.com/lucasb-eyer/go-colorful#blending-colors).
+
 Who?
 ====
 
