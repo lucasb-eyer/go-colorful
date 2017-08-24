@@ -4,6 +4,7 @@ package colorful
 import(
     "fmt"
     "math"
+    "image/color"
 )
 
 // A color is stored internally using sRGB (standard RGB) values in the range 0-1
@@ -18,6 +19,22 @@ func (col Color) RGBA() (r, g, b, a uint32) {
     b = uint32(col.B*65535.0+0.5)
     a = 0xFFFF
     return
+}
+
+// Constructs a colorful.Color from something implementing color.Color
+func MakeColor(col color.Color) Color {
+    r, g, b, a := col.RGBA()
+
+    // Since color.Color is alpha pre-multiplied, we need to divide the
+    // RGB values by alpha again in order to get back the original RGB.
+    r *= 0xffff
+    r /= a
+    g *= 0xffff
+    g /= a
+    b *= 0xffff
+    b /= a
+
+    return Color{float64(r)/65535.0, float64(g)/65535.0, float64(b)/65535.0}
 }
 
 // Might come in handy sometimes to reduce boilerplate code.
