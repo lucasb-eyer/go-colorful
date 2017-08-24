@@ -368,6 +368,21 @@ c := colorful.LabWhiteRef(0.507850, 0.040585,-0.370945, colorful.D50)
 l, a, b := c.LabWhiteRef(colorful.D50)
 ```
 
+### Reading and writing colors from databases
+
+The type `HexColor` makes it easy to store colors as strings in a database. It
+implements the [https://godoc.org/database/sql#Scanner](database/sql.Scanner)
+and [database/sql/driver.Value](https://godoc.org/database/sql/driver.Value)
+interfaces which provide automatic type conversion.
+
+Example:
+
+```go
+var hc HexColor
+_, err := db.QueryRow("SELECT '#ff0000';").Scan(&hc)
+// hc == HexColor{R: 1, G: 0, B: 0}; err == nil
+```
+
 FAQ
 ===
 
