@@ -14,7 +14,7 @@ two players got very similar colors, which bugged me. The very same evening,
 [I want hue](http://tools.medialab.sciences-po.fr/iwanthue/) was the top post
 on HackerNews' frontpage and showed me how to Do It Right™. Last but not
 least, there was no library for handling color spaces available in go. Colorful
-does just that and implements Go's color.Color interface.
+does just that and implements Go's `color.Color` interface.
 
 What?
 =====
@@ -118,6 +118,17 @@ h, c, l := c.Hcl()
 Note that, because of Go's unfortunate choice of requiring an initial uppercase,
 the name of the functions relating to the xyY space are just off. If you have
 any good suggestion, please open an issue. (I don't consider XyY good.)
+
+### The `color.Color` interface
+Because a `colorful.Color` implements Go's `color.Color` interface (found in the
+`image/color` package), it can be used anywhere that expects a `color.Color`.
+
+Furthermore, you can convert anything that implements the `color.Color` interface
+into a `colorful.Color` using the `MakeColorful` function:
+
+```go
+c := colorful.MakeColor(color.Gray16{12345})
+```
 
 ### Comparing colors
 In the RGB color space, the Euclidian distance between colors *doesn't* correspond

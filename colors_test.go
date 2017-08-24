@@ -4,6 +4,7 @@ import (
     "math"
     "strings"
     "testing"
+    "image/color"
 )
 
 // Checks whether the relative error is below eps
@@ -407,6 +408,36 @@ func TestClamp(t *testing.T) {
     c_want := Color{1.0, 0.0, 0.5}
     if c_orig.Clamped() != c_want {
         t.Errorf("%v.Clamped() => %v, want %v", c_orig, c_orig.Clamped(), c_want)
+    }
+}
+
+func TestMakeColor(t *testing.T) {
+    c_orig_nrgba := color.NRGBA{123, 45, 67, 255}
+    c_ours := MakeColor(c_orig_nrgba)
+    r, g, b := c_ours.RGB255()
+    if r != 123 || g != 45 || b != 67 {
+        t.Errorf("NRGBA->Colorful->RGB255 error: %v became (%v, %v, %v)", c_orig_nrgba, r, g, b)
+    }
+
+    c_orig_nrgba64 := color.NRGBA64{123 << 8, 45 << 8, 67 << 8, 0xffff}
+    c_ours = MakeColor(c_orig_nrgba64)
+    r, g, b = c_ours.RGB255()
+    if r != 123 || g != 45 || b != 67 {
+        t.Errorf("NRGBA64->Colorful->RGB255 error: %v became (%v, %v, %v)", c_orig_nrgba64, r, g, b)
+    }
+
+    c_orig_gray := color.Gray{123}
+    c_ours = MakeColor(c_orig_gray)
+    r, g, b = c_ours.RGB255()
+    if r != 123 || g != 123 || b != 123 {
+        t.Errorf("Gray->Colorful->RGB255 error: %v became (%v, %v, %v)", c_orig_gray, r, g, b)
+    }
+
+    c_orig_gray16 := color.Gray16{123 << 8}
+    c_ours = MakeColor(c_orig_gray16)
+    r, g, b = c_ours.RGB255()
+    if r != 123 || g != 123 || b != 123 {
+        t.Errorf("Gray16->Colorful->RGB255 error: %v became (%v, %v, %v)", c_orig_gray16, r, g, b)
     }
 }
 
