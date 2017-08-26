@@ -422,7 +422,7 @@ as well as [my answer](https://github.com/lucasb-eyer/go-colorful/issues/14#issu
 both with code and pretty pictures. Also note that this was somewhat covered above in the
 ["Blending colors" section](https://github.com/lucasb-eyer/go-colorful#blending-colors).
 
-### Q: In a thight loop, conversion to Lab/Luv/HCl/... are slooooow!
+### Q: In a tight loop, conversion to Lab/Luv/HCl/... are slooooow!
 A: Yes, they are.
 This library aims for correctness, readability, and modularity; it wasn't written with speed in mind.
 A large part of the slowness comes from these conversions going through `LinearRgb` which uses powers.
