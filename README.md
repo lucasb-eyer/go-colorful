@@ -422,6 +422,35 @@ as well as [my answer](https://github.com/lucasb-eyer/go-colorful/issues/14#issu
 both with code and pretty pictures. Also note that this was somewhat covered above in the
 ["Blending colors" section](https://github.com/lucasb-eyer/go-colorful#blending-colors).
 
+### Q: In a thight loop, conversion to Lab/Luv/HCl/... are slooooow!
+A: Yes, they are.
+This library aims for correctness, readability, and modularity; it wasn't written with speed in mind.
+A large part of the slowness comes from these conversions going through `LinearRgb` which uses powers.
+I implemented a fast approximation to `LinearRgb` called `FastLinearRgb` by using Taylor approximations.
+The approximation is roughly 5x faster and precise up to roughly 0.5%,
+the major caveat being that if the input values are outside the range 0-1, accuracy drops dramatically.
+You can use these in your conversions as follows:
+
+```go
+col := // Get your color somehow
+l, a, b := XyzToLab(LinearRgbToXyz(col.LinearRgb()))
+```
+
+If you need faster versions of `Distance*` and `Blend*` that make use of this fast approximation,
+feel free to implement them and open a pull-request, I'll happily accept.
+
+The derivation of these functions can be followed in [this Jupyter notebook](doc/LinearRGB Approximations.ipynb).
+Here's the main figure showing the approximation quality:
+
+![approximation quality](doc/approx-quality.png)
+
+More speed could be gained by using SIMD instructions in many places.
+You can also get more speed for specific conversions by approximating the full conversion function,
+but that is outside the scope of this library.
+Thanks to [@ZirconiumX](https://github.com/ZirconiumX) for starting this investigation,
+see [issue #18](https://github.com/lucasb-eyer/go-colorful/issues/18) for details.
+
+
 Who?
 ====
 

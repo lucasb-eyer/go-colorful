@@ -2,10 +2,13 @@ package colorful
 
 import (
     "math"
+    "math/rand"
     "strings"
     "testing"
     "image/color"
 )
+
+var bench_result float64  // Dummy for benchmarks to avoid optimization
 
 // Checks whether the relative error is below eps
 func almosteq_eps(v1, v2, eps float64) bool {
@@ -197,7 +200,70 @@ func TestHexConversion(t *testing.T) {
 
 /// Linear ///
 //////////////
-// TODO (implicitly tested by XYZ)
+
+// LinearRgb itself is implicitly tested by XYZ conversions below (they use it).
+// So what we do here is just test that the FastLinearRgb approximation is "good enough"
+func TestFastLinearRgb(t *testing.T) {
+    const eps = 6.0/255.0  // We want that "within 6 RGB values total" is "good enough".
+
+    for r := 0.0 ; r < 256.0 ; r++ {
+        for g := 0.0 ; g < 256.0 ; g++ {
+            for b := 0.0 ; b < 256.0 ; b++ {
+                c := Color{r/255.0, g/255.0, b/255.0}
+                r_want, g_want, b_want := c.LinearRgb()
+                r_appr, g_appr, b_appr := c.FastLinearRgb()
+                dr, dg, db := math.Abs(r_want-r_appr), math.Abs(g_want-g_appr), math.Abs(b_want-b_appr)
+                if dr+dg+db > eps {
+                    t.Errorf("FastLinearRgb not precise enough for %v: differences are (%v, %v, %v), allowed total difference is %v", c, dr, dg, db, eps)
+                    return
+                }
+
+                c_want := LinearRgb(r/255.0, g/255.0, b/255.0)
+                c_appr := FastLinearRgb(r/255.0, g/255.0, b/255.0)
+                dr, dg, db = math.Abs(c_want.R-c_appr.R), math.Abs(c_want.G-c_appr.G), math.Abs(c_want.B-c_appr.B)
+                if dr+dg+db > eps {
+                    t.Errorf("FastLinearRgb not precise enough for (%v, %v, %v): differences are (%v, %v, %v), allowed total difference is %v", r, g, b, dr, dg, db, eps)
+                    return
+                }
+            }
+        }
+    }
+}
+
+// Also include some benchmarks to make sure the `Fast` versions are actually significantly faster!
+// (Sounds silly, but the original ones weren't!)
+
+func BenchmarkColorToLinear(bench *testing.B) {
+    var r, g, b float64
+    for n := 0; n < bench.N; n++ {
+        r, g, b = Color{rand.Float64(), rand.Float64(), rand.Float64()}.LinearRgb()
+    }
+    bench_result = r + g + b
+}
+
+func BenchmarkFastColorToLinear(bench *testing.B) {
+    var r, g, b float64
+    for n := 0; n < bench.N; n++ {
+        r, g, b = Color{rand.Float64(), rand.Float64(), rand.Float64()}.FastLinearRgb()
+    }
+    bench_result = r + g + b
+}
+
+func BenchmarkLinearToColor(bench *testing.B) {
+    var c Color
+    for n := 0; n < bench.N; n++ {
+        c = LinearRgb(rand.Float64(), rand.Float64(), rand.Float64())
+    }
+    bench_result = c.R + c.G + c.B
+}
+
+func BenchmarkFastLinearToColor(bench *testing.B) {
+    var c Color
+    for n := 0; n < bench.N; n++ {
+        c = FastLinearRgb(rand.Float64(), rand.Float64(), rand.Float64())
+    }
+    bench_result = c.R + c.G + c.B
+}
 
 /// XYZ ///
 ///////////
