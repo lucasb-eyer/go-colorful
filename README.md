@@ -439,6 +439,11 @@ l, a, b := XyzToLab(LinearRgbToXyz(col.LinearRgb()))
 If you need faster versions of `Distance*` and `Blend*` that make use of this fast approximation,
 feel free to implement them and open a pull-request, I'll happily accept.
 
+The derivation of these functions can be followed in [this Jupyter notebook](doc/LinearRGB Approximations.ipynb).
+Here's the main figure showing the approximation quality:
+
+![approximation quality](doc/approx-quality.png)
+
 More speed could be gained by using SIMD instructions in many places.
 You can also get more speed for specific conversions by approximating the full conversion function,
 but that is outside the scope of this library.
