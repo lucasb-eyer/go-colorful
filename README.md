@@ -130,6 +130,12 @@ into a `colorful.Color` using the `MakeColorful` function:
 c := colorful.MakeColor(color.Gray16{12345})
 ```
 
+**Caveat:** Be aware that for this latter conversion  (using `MakeColor`) hits a corner-case
+when alpha is exactly zero. Because `color.Color` uses pre-multiplied alpha colors,
+this means the RGB values are lost and it's impossible to recover them. The current
+implementation `panic()`s in that case, see [issue 21](https://github.com/lucasb-eyer/go-colorful/issues/21)
+for discussion and suggesting alternatives.
+
 ### Comparing colors
 In the RGB color space, the Euclidian distance between colors *doesn't* correspond
 to visual/perceptual distance. This means that two pairs of colors which have the
@@ -450,6 +456,10 @@ but that is outside the scope of this library.
 Thanks to [@ZirconiumX](https://github.com/ZirconiumX) for starting this investigation,
 see [issue #18](https://github.com/lucasb-eyer/go-colorful/issues/18) for details.
 
+### Q: `MakeColor` panics when alpha is zero!
+A: Because in that case, the conversion is undefined. See
+[issue 21](https://github.com/lucasb-eyer/go-colorful/issues/21)
+as well as the short caveat discussion in the "The `color.Color` interface" section above.
 
 Who?
 ====
