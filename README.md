@@ -459,7 +459,7 @@ see [issue #18](https://github.com/lucasb-eyer/go-colorful/issues/18) for detail
 ### Q: `MakeColor` panics when alpha is zero!
 A: Because in that case, the conversion is undefined. See
 [issue 21](https://github.com/lucasb-eyer/go-colorful/issues/21)
-as well as the short caveat discussion in the "The `color.Color` interface" section above.
+as well as the short caveat discussion in the ["The `color.Color` interface"](README.md#the-colorcolor-interface) section above.
 
 Who?
 ====
