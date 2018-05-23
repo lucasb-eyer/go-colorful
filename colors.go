@@ -248,22 +248,22 @@ func Hsl(h, s, l float64) Color {
 	tb = h - 1.0/3.0
 
 	if tr < 0 {
-		tr += 1
+		tr++
 	}
 	if tr > 1 {
-		tr -= 1
+		tr--
 	}
 	if tg < 0 {
-		tg += 1
+		tg++
 	}
 	if tg > 1 {
-		tg -= 1
+		tg--
 	}
 	if tb < 0 {
-		tb += 1
+		tb++
 	}
 	if tb > 1 {
-		tb -= 1
+		tb--
 	}
 
 	// Red
