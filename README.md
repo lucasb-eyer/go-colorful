@@ -467,6 +467,12 @@ Who?
 This library has been developed by Lucas Beyer with contributions from
 Bastien Dejean (@baskerville) and Phil Kulak (@pkulak).
 
+Release Notes
+=============
+
+### Version 0.9
+- Initial version number after having ignored versioning for a long time :)
+
 License: MIT
 ============
 Copyright (c) 2013 Lucas Beyer
