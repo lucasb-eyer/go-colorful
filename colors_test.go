@@ -475,31 +475,38 @@ func TestClamp(t *testing.T) {
 
 func TestMakeColor(t *testing.T) {
 	c_orig_nrgba := color.NRGBA{123, 45, 67, 255}
-	c_ours := MakeColor(c_orig_nrgba)
+	c_ours, ok := MakeColor(c_orig_nrgba)
 	r, g, b := c_ours.RGB255()
-	if r != 123 || g != 45 || b != 67 {
-		t.Errorf("NRGBA->Colorful->RGB255 error: %v became (%v, %v, %v)", c_orig_nrgba, r, g, b)
+	if r != 123 || g != 45 || b != 67 || !ok {
+		t.Errorf("NRGBA->Colorful->RGB255 error: %v became (%v, %v, %v, %t)", c_orig_nrgba, r, g, b, ok)
 	}
 
 	c_orig_nrgba64 := color.NRGBA64{123 << 8, 45 << 8, 67 << 8, 0xffff}
-	c_ours = MakeColor(c_orig_nrgba64)
+	c_ours, ok = MakeColor(c_orig_nrgba64)
 	r, g, b = c_ours.RGB255()
-	if r != 123 || g != 45 || b != 67 {
-		t.Errorf("NRGBA64->Colorful->RGB255 error: %v became (%v, %v, %v)", c_orig_nrgba64, r, g, b)
+	if r != 123 || g != 45 || b != 67 || !ok {
+		t.Errorf("NRGBA64->Colorful->RGB255 error: %v became (%v, %v, %v, %t)", c_orig_nrgba64, r, g, b, ok)
 	}
 
 	c_orig_gray := color.Gray{123}
-	c_ours = MakeColor(c_orig_gray)
+	c_ours, ok = MakeColor(c_orig_gray)
 	r, g, b = c_ours.RGB255()
-	if r != 123 || g != 123 || b != 123 {
-		t.Errorf("Gray->Colorful->RGB255 error: %v became (%v, %v, %v)", c_orig_gray, r, g, b)
+	if r != 123 || g != 123 || b != 123 || !ok {
+		t.Errorf("Gray->Colorful->RGB255 error: %v became (%v, %v, %v, %t)", c_orig_gray, r, g, b, ok)
 	}
 
 	c_orig_gray16 := color.Gray16{123 << 8}
-	c_ours = MakeColor(c_orig_gray16)
+	c_ours, ok = MakeColor(c_orig_gray16)
 	r, g, b = c_ours.RGB255()
-	if r != 123 || g != 123 || b != 123 {
-		t.Errorf("Gray16->Colorful->RGB255 error: %v became (%v, %v, %v)", c_orig_gray16, r, g, b)
+	if r != 123 || g != 123 || b != 123 || !ok {
+		t.Errorf("Gray16->Colorful->RGB255 error: %v became (%v, %v, %v, %t)", c_orig_gray16, r, g, b, ok)
+	}
+
+	c_orig_rgba := color.RGBA{255, 255, 255, 0}
+	c_ours, ok = MakeColor(c_orig_rgba)
+	r, g, b = c_ours.RGB255()
+	if r != 0 || g != 0 || b != 0 || ok {
+		t.Errorf("RGBA->Colorful->RGB255 error: %v became (%v, %v, %v, %t)", c_orig_rgba, r, g, b, ok)
 	}
 }
 
