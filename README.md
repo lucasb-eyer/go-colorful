@@ -465,7 +465,7 @@ Who?
 ====
 
 This library has been developed by Lucas Beyer with contributions from
-Bastien Dejean (@baskerville) and Phil Kulak (@pkulak).
+Bastien Dejean (@baskerville), Phil Kulak (@pkulak) and Christian Muehlhaeuser (@muesli).
 
 License: MIT
 ============
