@@ -455,6 +455,12 @@ but that is outside the scope of this library.
 Thanks to [@ZirconiumX](https://github.com/ZirconiumX) for starting this investigation,
 see [issue #18](https://github.com/lucasb-eyer/go-colorful/issues/18) for details.
 
+### Q: Why would `MakeColor` ever fail!?
+A: `MakeColor` fails when the alpha channel is zero. In that case, the
+conversion is undefined. See [issue 21](https://github.com/lucasb-eyer/go-colorful/issues/21)
+as well as the short caveat note in the ["The `color.Color` interface"](README.md#the-colorcolor-interface)
+section above.
+
 Who?
 ====
 
