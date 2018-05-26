@@ -470,6 +470,9 @@ Bastien Dejean (@baskerville), Phil Kulak (@pkulak) and Christian Muehlhaeuser (
 Release Notes
 =============
 
+### Version 1.0
+- API Breaking change in `MakeColor`: instead of `panic`ing when alpha is zero, it now returns a secondary, boolean return value indicating success. See [the color.Color interface](https://github.com/lucasb-eyer/go-colorful#the-colorcolor-interface) section and [this FAQ entry](https://github.com/lucasb-eyer/go-colorful#q-why-would-makecolor-ever-fail) for details.
+
 ### Version 0.9
 - Initial version number after having ignored versioning for a long time :)
 
