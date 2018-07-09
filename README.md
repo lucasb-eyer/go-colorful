@@ -364,6 +364,8 @@ from top to bottom: `Warm`, `FastWarm`, `Happy`, `FastHappy`, `Soft`,
 
 ![All example palettes](doc/palettegens/palettegens.png)
 
+Again, the code used for generating the above image is available as [doc/palettegens/palettegens.go](https://github.com/lucasb-eyer/go-colorful/blob/master/doc/palettegens/palettegens.go).
+
 ### Sorting colors
 TODO: Sort using dist fn.
 
