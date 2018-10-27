@@ -631,19 +631,23 @@ func (cl Color) DistanceCIE94(cr Color) float64 {
 	return math.Sqrt(vL2+vC2+vH2) * 0.01 // See above.
 }
 
-// DistanceCIEDE2000 uses the Delta E 2000 formula to calculate color distance.
-// It is more expensive but more accurate than both DistanceLab and DistanceCIE94.
+// DistanceCIEDE2000 uses the Delta E 2000 formula to calculate color
+// distance. It is more expensive but more accurate than both DistanceLab
+// and DistanceCIE94.
 func (cl Color) DistanceCIEDE2000(cr Color) float64 {
+	return cl.DistanceCIEDE2000klch(cr, 1.0, 1.0, 1.0)
+}
+
+// DistanceCIEDE2000klch uses the Delta E 2000 formula with custom values
+// for the weighting factors kL, kC, and kH.
+func (cl Color) DistanceCIEDE2000klch(cr Color, kl, kc, kh float64) float64 {
 	l1, a1, b1 := cl.Lab()
 	l2, a2, b2 := cr.Lab()
 
-	// As with CIE94, we scale up the ranges of L,a,b beforehand and scale them down again afterwards.
+	// As with CIE94, we scale up the ranges of L,a,b beforehand and scale
+	// them down again afterwards.
 	l1, a1, b1 = l1*100.0, a1*100.0, b1*100.0
 	l2, a2, b2 = l2*100.0, a2*100.0, b2*100.0
-
-	kl := 1.0
-	kc := 1.0
-	kh := 1.0
 
 	cab1 := math.Sqrt(sq(a1) + sq(b1))
 	cab2 := math.Sqrt(sq(a2) + sq(b2))
