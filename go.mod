@@ -1,5 +1,5 @@
 module github.com/lucasb-eyer/go-colorful
 
-go 1.9
+go 1.12
 
-require gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0
+require github.com/DATA-DOG/go-sqlmock v1.3.3
