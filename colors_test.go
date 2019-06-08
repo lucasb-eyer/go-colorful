@@ -523,7 +523,7 @@ func TestMakeColor(t *testing.T) {
 /// Issues raised on github ///
 ///////////////////////////////
 
-// https://github.com/lucasb-eyer/go-colorful/issues/11
+// https://github.com/diamondburned/go-colorful/issues/11
 func TestIssue11(t *testing.T) {
 	c1hex := "#1a1a46"
 	c2hex := "#666666"
