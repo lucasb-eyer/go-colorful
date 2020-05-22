@@ -1,6 +1,7 @@
 package colorful
 
 import (
+	"encoding/json"
 	"reflect"
 	"testing"
 )
@@ -27,4 +28,28 @@ func TestHexColor(t *testing.T) {
 			t.Errorf("%v.Value() == %v, %v, want %v, <nil>", tc.hc, gotValue, err, tc.s)
 		}
 	}
+}
+
+type CompositeType struct {
+	Name  string   `json:"name,omitempty"`
+	Color HexColor `json:"color,omitempty"`
+}
+
+func TestHexColorCompositeJson(t *testing.T) {
+	var obj = CompositeType{Name: "John", Color: HexColor{R: 1, G: 0, B: 1}}
+	var jsonData, err = json.Marshal(obj)
+	if err != nil {
+		t.Errorf("json.Marshall(obj) wrote %v", err)
+	}
+	var obj2 CompositeType
+	err = json.Unmarshal(jsonData, &obj2)
+
+	if err != nil {
+		t.Errorf("json.Unmarshall(%s) wrote %v", jsonData, err)
+	}
+
+	if !reflect.DeepEqual(obj2, obj) {
+		t.Errorf("json.Unmarshal(json.Marsrhall(obj)) != obj")
+	}
+
 }
