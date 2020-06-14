@@ -420,9 +420,9 @@ and thus monitors. When you're trying to convert, say, `HCL(190.0, 1.0, 1.0).RGB
 you're asking for RGB values of `(-2105.254  300.680  286.185)`, which clearly don't exist,
 and the `RGB255` function just casts these numbers to `uint8`, creating wrap-around and
 what looks like a completely broken gradient. What you want to do, is either use more
-reasonable values of colors which actually exist in RGB, or just `Clamp()` the resulting
+reasonable values of colors which actually exist in RGB, or just `Clamped()` the resulting
 color to its nearest existing one, living with the consequences:
-`HCL(190.0, 1.0, 1.0).Clamp().RGB255()`. It will look something like this:
+`HCL(190.0, 1.0, 1.0).Clamped().RGB255()`. It will look something like this:
 
 <img height="150" src="https://user-images.githubusercontent.com/1476029/29596343-9a8c62c6-8771-11e7-9026-b8eb8852cc4a.png">
 
