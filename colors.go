@@ -102,6 +102,14 @@ func (c1 Color) BlendRgb(c2 Color, t float64) Color {
 		c1.B + t*(c2.B-c1.B)}
 }
 
+func (c1 Color) BlendLrgb(c2 Color, t float64) Color {
+	return Color{
+		math.Sqrt(math.Pow(c1.R, 2)*(1-t) + math.Pow(c2.R, 2)*t),
+		math.Sqrt(math.Pow(c1.G, 2)*(1-t) + math.Pow(c2.G, 2)*t),
+		math.Sqrt(math.Pow(c1.B, 2)*(1-t) + math.Pow(c2.B, 2)*t),
+	}
+}
+
 // Utility used by Hxx color-spaces for interpolating between two angles in [0,360].
 func interp_angle(a0, a1, t float64) float64 {
 	// Based on the answer here: http://stackoverflow.com/a/14498790/2366315
