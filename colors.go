@@ -435,6 +435,16 @@ func LinearRgbToXyz(r, g, b float64) (x, y, z float64) {
 	return
 }
 
+func (c1 Color) BlendLrgb(c2 Color, t float64) Color {
+	r1, g1, b1 := c1.LinearRgb()
+	r2, g2, b2 := c2.LinearRgb()
+	return LinearRgb(
+		r1+t*(r2-r1),
+		g1+t*(g2-g1),
+		b1+t*(b2-b1),
+	)
+}
+
 /// XYZ ///
 ///////////
 // http://www.sjbrown.co.uk/2004/05/14/gamma-correct-rendering/
