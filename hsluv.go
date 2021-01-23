@@ -115,18 +115,24 @@ func (col Color) HPLuv() (h, s, l float64) {
 
 // DistanceHSLuv calculates Euclidan distance in the HSLuv colorspace. No idea
 // how useful this is.
+//
+// The Hue value is divided by 360 before the calculation, so that H, S, and L
+// have the same range.
 func (c1 Color) DistanceHSLuv(c2 Color) float64 {
 	h1, s1, l1 := c1.HSLuv()
 	h2, s2, l2 := c2.HSLuv()
-	return math.Sqrt(sq(h1-h2) + sq(s1-s2) + sq(l1-l2))
+	return math.Sqrt(sq((h1-h2)/360.0) + sq(s1-s2) + sq(l1-l2))
 }
 
-// DistanceHPLuv calculates Euclidan distance in the HPLuv colorspace. No idea
+// DistanceHPLuv calculates Euclidean distance in the HPLuv colorspace. No idea
 // how useful this is.
+//
+// The Hue value is divided by 360 before the calculation, so that H, S, and L
+// have the same range.
 func (c1 Color) DistanceHPLuv(c2 Color) float64 {
 	h1, s1, l1 := c1.HPLuv()
 	h2, s2, l2 := c2.HPLuv()
-	return math.Sqrt(sq(h1-h2) + sq(s1-s2) + sq(l1-l2))
+	return math.Sqrt(sq((h1-h2)/360.0) + sq(s1-s2) + sq(l1-l2))
 }
 
 var m = [3][3]float64{
