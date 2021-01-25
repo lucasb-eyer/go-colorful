@@ -6,11 +6,13 @@ import "math"
 // Under MIT License
 // Modified so that Saturation and Luminance are in [0..1] instead of [0..100].
 
-// HSLuv uses an incorrect version of the D65. This is used internally but does
-// not need to be set manually anywhere.
+// HSLuv uses a rounded version of the D65. This has no impact on the final RGB
+// values, but to keep high levels of accuracy for internal operations and when
+// comparing to the test values, this modified white reference is used internally.
+//
 // See this GitHub thread for details on these values:
 //     https://github.com/hsluv/hsluv/issues/79
-var HSLuvD65 = [3]float64{0.95045592705167, 1.0, 1.089057750759878}
+var hSLuvD65 = [3]float64{0.95045592705167, 1.0, 1.089057750759878}
 
 func LuvLChToHSLuv(l, c, h float64) (float64, float64, float64) {
 	// [-1..1] but the code expects it to be [-100..100]
@@ -81,7 +83,7 @@ func HPLuvToLuvLCh(h, s, l float64) (float64, float64, float64) {
 func HSLuv(h, s, l float64) Color {
 	// HSLuv -> LuvLCh -> CIELUV -> CIEXYZ -> Linear RGB -> sRGB
 	l, u, v := LuvLChToLuv(HSLuvToLuvLCh(h, s, l))
-	return LinearRgb(XyzToLinearRgb(LuvToXyzWhiteRef(l, u, v, HSLuvD65))).Clamped()
+	return LinearRgb(XyzToLinearRgb(LuvToXyzWhiteRef(l, u, v, hSLuvD65))).Clamped()
 }
 
 // HPLuv creates a new Color from values in the HPLuv color space.
@@ -92,7 +94,7 @@ func HSLuv(h, s, l float64) Color {
 func HPLuv(h, s, l float64) Color {
 	// HPLuv -> LuvLCh -> CIELUV -> CIEXYZ -> Linear RGB -> sRGB
 	l, u, v := LuvLChToLuv(HPLuvToLuvLCh(h, s, l))
-	return LinearRgb(XyzToLinearRgb(LuvToXyzWhiteRef(l, u, v, HSLuvD65))).Clamped()
+	return LinearRgb(XyzToLinearRgb(LuvToXyzWhiteRef(l, u, v, hSLuvD65))).Clamped()
 }
 
 // HSLuv returns the Hue, Saturation and Luminance of the color in the HSLuv
@@ -100,7 +102,7 @@ func HPLuv(h, s, l float64) Color {
 // (lightness) in [0..1].
 func (col Color) HSLuv() (h, s, l float64) {
 	// sRGB -> Linear RGB -> CIEXYZ -> CIELUV -> LuvLCh -> HSLuv
-	return LuvLChToHSLuv(col.LuvLChWhiteRef(HSLuvD65))
+	return LuvLChToHSLuv(col.LuvLChWhiteRef(hSLuvD65))
 }
 
 // HPLuv returns the Hue, Saturation and Luminance of the color in the HSLuv
@@ -110,7 +112,7 @@ func (col Color) HSLuv() (h, s, l float64) {
 // Note that HPLuv can only represent pastel colors, and so the Saturation
 // value could be much larger than 1 for colors it can't represent.
 func (col Color) HPLuv() (h, s, l float64) {
-	return LuvLChToHPLuv(col.LuvLChWhiteRef(HSLuvD65))
+	return LuvLChToHPLuv(col.LuvLChWhiteRef(hSLuvD65))
 }
 
 // DistanceHSLuv calculates Euclidan distance in the HSLuv colorspace. No idea

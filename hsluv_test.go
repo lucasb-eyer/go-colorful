@@ -71,7 +71,7 @@ func compareHex(t *testing.T, result, expected string, method string, hex string
 	}
 }
 
-func TestSnapshot(t *testing.T) {
+func TestHSLuv(t *testing.T) {
 	snapshotFile, err := os.Open("hsluv-snapshot-rev4.json")
 	if err != nil {
 		t.Fatal(err)
@@ -119,16 +119,16 @@ func TestSnapshot(t *testing.T) {
 			colorValues.Luv[2] /= 100.0
 
 			compareTuple(t, pack(LuvLChWhiteRef(
-				colorValues.Lch[0], colorValues.Lch[1], colorValues.Lch[2], HSLuvD65,
+				colorValues.Lch[0], colorValues.Lch[1], colorValues.Lch[2], hSLuvD65,
 			).values()), colorValues.Rgb, "convLchRgb", hex)
 			compareTuple(t, pack(Color{
 				colorValues.Rgb[0], colorValues.Rgb[1], colorValues.Rgb[2],
-			}.LuvLChWhiteRef(HSLuvD65)), colorValues.Lch, "convRgbLch", hex)
+			}.LuvLChWhiteRef(hSLuvD65)), colorValues.Lch, "convRgbLch", hex)
 			compareTuple(t, pack(XyzToLuvWhiteRef(
-				colorValues.Xyz[0], colorValues.Xyz[1], colorValues.Xyz[2], HSLuvD65,
+				colorValues.Xyz[0], colorValues.Xyz[1], colorValues.Xyz[2], hSLuvD65,
 			)), colorValues.Luv, "convXyzLuv", hex)
 			compareTuple(t, pack(LuvToXyzWhiteRef(
-				colorValues.Luv[0], colorValues.Luv[1], colorValues.Luv[2], HSLuvD65,
+				colorValues.Luv[0], colorValues.Luv[1], colorValues.Luv[2], hSLuvD65,
 			)), colorValues.Xyz, "convLuvXyz", hex)
 			compareTuple(t, pack(LuvToLuvLCh(unpack(colorValues.Luv))), colorValues.Lch, "convLuvLch", hex)
 			compareTuple(t, pack(LuvLChToLuv(unpack(colorValues.Lch))), colorValues.Luv, "convLchLuv", hex)
