@@ -905,7 +905,7 @@ func (col1 Color) BlendHcl(col2 Color, t float64) Color {
 	h2, c2, l2 := col2.Hcl()
 
 	// We know that h are both in [0..360]
-	return Hcl(interp_angle(h1, h2, t), c1+t*(c2-c1), l1+t*(l2-l1))
+	return Hcl(interp_angle(h1, h2, t), c1+t*(c2-c1), l1+t*(l2-l1)).Clamped()
 }
 
 // LuvLch
