@@ -1,9 +1,11 @@
 go-colorful
 ===========
-A library for playing with colors in go (golang).
 
+[![go reportcard](https://goreportcard.com/badge/github.com/lucasb-eyer/go-colorful)](https://goreportcard.com/report/github.com/lucasb-eyer/go-colorful)
 [![Build Status](https://travis-ci.org/lucasb-eyer/go-colorful.svg?branch=master)](https://travis-ci.org/lucasb-eyer/go-colorful)
 [![Coverage Status](https://coveralls.io/repos/github/lucasb-eyer/go-colorful/badge.svg?branch=master)](https://coveralls.io/github/lucasb-eyer/go-colorful?branch=master)
+
+A library for playing with colors in Go. Supports Go 1.13 onwards.
 
 Why?
 ====
@@ -468,25 +470,12 @@ section above.
 Who?
 ====
 
-This library has been developed by Lucas Beyer with contributions from
+This library was developed by Lucas Beyer with contributions from
 Bastien Dejean (@baskerville), Phil Kulak (@pkulak) and Christian Muehlhaeuser (@muesli).
 
-Release Notes
-=============
+It is now maintained by makeworld (@makeworld-the-better-one).
 
-### Version 1.0
-- API Breaking change in `MakeColor`: instead of `panic`ing when alpha is zero, it now returns a secondary, boolean return value indicating success. See [the color.Color interface](https://github.com/lucasb-eyer/go-colorful#the-colorcolor-interface) section and [this FAQ entry](https://github.com/lucasb-eyer/go-colorful#q-why-would-makecolor-ever-fail) for details.
 
-### Version 0.9
-- Initial version number after having ignored versioning for a long time :)
+## License
 
-License: MIT
-============
-Copyright (c) 2013 Lucas Beyer
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+This repo is under the MIT license, see [LICENSE](LICENSE) for details.
