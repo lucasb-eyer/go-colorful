@@ -56,7 +56,7 @@ func (hc HexColor) MarshalJSON() ([]byte, error) {
 	return json.Marshal(Color(hc).Hex())
 }
 
-// Decode - deserilize function for https://github.com/kelseyhightower/envconfig
+// Decode - deserialize function for https://github.com/kelseyhightower/envconfig
 func (hc *HexColor) Decode(hexCode string) error {
 	var col, err = Hex(hexCode)
 	if err != nil {

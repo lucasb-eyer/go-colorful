@@ -9,12 +9,13 @@ but only releases after v1.0.3 properly adhere to it.
 
 ## [Unreleased]
 ### Added
-- HSLuv and HPLuv color spaces
-- CIE LCh(uv) color space, called `LuvLCh` in code
+- HSLuv and HPLuv color spaces (#41, #51)
+- CIE LCh(uv) color space, called `LuvLCh` in code (#51)
+- JSON and envconfig serialization support for `HexColor` (#42)
 
 ### Fixed
-- RGB to/from XYZ conversion is more accurate
-- A bug in `XYZToLuvWhiteRef` that only applied to very small values was fixed
+- RGB to/from XYZ conversion is more accurate (#51)
+- A bug in `XYZToLuvWhiteRef` that only applied to very small values was fixed (#51)
 - `BlendHCL` output is clamped so that it's not invalid (#46)
 
 
