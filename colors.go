@@ -435,7 +435,10 @@ func LinearRgbToXyz(r, g, b float64) (x, y, z float64) {
 	return
 }
 
-func (c1 Color) BlendLrgb(c2 Color, t float64) Color {
+// BlendLinearRgb blends two colors in the Linear RGB color-space.
+// Unlike BlendRgb, this will not produce dark color around the center.
+// t == 0 results in c1, t == 1 results in c2
+func (c1 Color) BlendLinearRgb(c2 Color, t float64) Color {
 	r1, g1, b1 := c1.LinearRgb()
 	r2, g2, b2 := c2.LinearRgb()
 	return LinearRgb(
