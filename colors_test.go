@@ -558,6 +558,15 @@ func TestIssue11(t *testing.T) {
 		t.Errorf("Issue11: %v --Rgb-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
 	}
 
+	blend = c1.BlendLinearRgb(c2, 0).Hex()
+	if blend != c1hex {
+		t.Errorf("Issue11: %v --LinearRgb-> %v = %v, want %v", c1hex, c2hex, blend, c1hex)
+	}
+	blend = c1.BlendLinearRgb(c2, 1).Hex()
+	if blend != c2hex {
+		t.Errorf("Issue11: %v --LinearRgb-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
+	}
+
 	blend = c1.BlendLab(c2, 0).Hex()
 	if blend != c1hex {
 		t.Errorf("Issue11: %v --Lab-> %v = %v, want %v", c1hex, c2hex, blend, c1hex)
