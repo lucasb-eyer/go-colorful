@@ -604,7 +604,7 @@ func (c1 Color) DistanceLab(c2 Color) float64 {
 	return math.Sqrt(sq(l1-l2) + sq(a1-a2) + sq(b1-b2))
 }
 
-// That's actually the same, but I don't want to break code.
+// DistanceCIE76 is the same as DistanceLab.
 func (c1 Color) DistanceCIE76(c2 Color) float64 {
 	return c1.DistanceLab(c2)
 }
