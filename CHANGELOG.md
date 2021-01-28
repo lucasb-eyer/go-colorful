@@ -6,8 +6,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 The format of this file is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 but only releases after v1.0.3 properly adhere to it.
 
+## [Unreleased]
+### Added
+- `BlendLinearRgb` (#50)
+
 
 ## [1.2.0] - 2021-01-27
+This is the same as the v1.1.0 tag.
+
 ### Added
 - HSLuv and HPLuv color spaces (#41, #51)
 - CIE LCh(uv) color space, called `LuvLCh` in code (#51)
