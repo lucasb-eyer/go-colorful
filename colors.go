@@ -109,6 +109,24 @@ func (c1 Color) DistanceLinearRGB(c2 Color) float64 {
 	return c1.DistanceLinearRgb(c2)
 }
 
+// DistanceRiemersma is a color distance algorithm developed by Thiadmer Riemersma.
+// It uses RGB coordinates, but he claims it has similar results to CIELUV.
+// This makes it both fast and accurate.
+//
+// Sources:
+//
+//     https://www.compuphase.com/cmetric.htm
+//     https://github.com/lucasb-eyer/go-colorful/issues/52
+func (c1 Color) DistanceRiemersma(c2 Color) float64 {
+	rAvg := (c1.R + c2.R) / 2.0
+	// Deltas
+	dR := c1.R - c2.R
+	dG := c1.G - c2.G
+	dB := c1.B - c2.B
+
+	return math.Sqrt((2+rAvg)*dR*dR + 4*dG*dG + (2+(1-rAvg))*dB*dB)
+}
+
 // Check for equality between colors within the tolerance Delta (1/255).
 func (c1 Color) AlmostEqualRgb(c2 Color) bool {
 	return math.Abs(c1.R-c2.R)+

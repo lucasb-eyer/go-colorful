@@ -9,6 +9,7 @@ but only releases after v1.0.3 properly adhere to it.
 ## [Unreleased]
 ### Added
 - `BlendLinearRgb` (#50)
+- `DistanceRiemersma` (#52)
 
 ### Deprecated
 - `DistanceLinearRGB` is deprecated for the name `DistanceLinearRgb` which is more in-line with the rest of the library
