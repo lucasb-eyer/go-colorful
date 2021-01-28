@@ -40,12 +40,12 @@ func main() {
 		return
 	}
 	for i := 0; i < colors; i++ {
-		draw.Draw(img, image.Rect(i*(blockw+space), 0, i*(blockw+space)+blockw, blockw), &image.Uniform{warm[i]}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*(blockw+space), 1*blockw+1*space, i*(blockw+space)+blockw, 2*blockw+1*space), &image.Uniform{fwarm[i]}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*(blockw+space), 2*blockw+3*space, i*(blockw+space)+blockw, 3*blockw+3*space), &image.Uniform{happy[i]}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*(blockw+space), 3*blockw+4*space, i*(blockw+space)+blockw, 4*blockw+4*space), &image.Uniform{fhappy[i]}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*(blockw+space), 4*blockw+6*space, i*(blockw+space)+blockw, 5*blockw+6*space), &image.Uniform{soft[i]}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*(blockw+space), 5*blockw+8*space, i*(blockw+space)+blockw, 6*blockw+8*space), &image.Uniform{brownies[i]}, image.ZP, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), 0, i*(blockw+space)+blockw, blockw), &image.Uniform{warm[i]}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), 1*blockw+1*space, i*(blockw+space)+blockw, 2*blockw+1*space), &image.Uniform{fwarm[i]}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), 2*blockw+3*space, i*(blockw+space)+blockw, 3*blockw+3*space), &image.Uniform{happy[i]}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), 3*blockw+4*space, i*(blockw+space)+blockw, 4*blockw+4*space), &image.Uniform{fhappy[i]}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), 4*blockw+6*space, i*(blockw+space)+blockw, 5*blockw+6*space), &image.Uniform{soft[i]}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), 5*blockw+8*space, i*(blockw+space)+blockw, 6*blockw+8*space), &image.Uniform{brownies[i]}, image.Point{}, draw.Src)
 	}
 
 	toimg, err := os.Create("palettegens.png")

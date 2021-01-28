@@ -20,14 +20,14 @@ func main() {
 	//c2, _ := colorful.Hex("#1E3140")
 
 	for i := 0; i < blocks; i++ {
-		draw.Draw(img, image.Rect(i*blockw, 0, (i+1)*blockw, 40), &image.Uniform{c1.BlendHsv(c2, float64(i)/float64(blocks-1))}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*blockw, 40, (i+1)*blockw, 80), &image.Uniform{c1.BlendLuv(c2, float64(i)/float64(blocks-1))}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*blockw, 80, (i+1)*blockw, 120), &image.Uniform{c1.BlendRgb(c2, float64(i)/float64(blocks-1))}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*blockw, 120, (i+1)*blockw, 160), &image.Uniform{c1.BlendLab(c2, float64(i)/float64(blocks-1))}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*blockw, 160, (i+1)*blockw, 200), &image.Uniform{c1.BlendHcl(c2, float64(i)/float64(blocks-1))}, image.ZP, draw.Src)
+		draw.Draw(img, image.Rect(i*blockw, 0, (i+1)*blockw, 40), &image.Uniform{c1.BlendHsv(c2, float64(i)/float64(blocks-1))}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*blockw, 40, (i+1)*blockw, 80), &image.Uniform{c1.BlendLuv(c2, float64(i)/float64(blocks-1))}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*blockw, 80, (i+1)*blockw, 120), &image.Uniform{c1.BlendRgb(c2, float64(i)/float64(blocks-1))}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*blockw, 120, (i+1)*blockw, 160), &image.Uniform{c1.BlendLab(c2, float64(i)/float64(blocks-1))}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*blockw, 160, (i+1)*blockw, 200), &image.Uniform{c1.BlendHcl(c2, float64(i)/float64(blocks-1))}, image.Point{}, draw.Src)
 
 		// This can be used to "fix" invalid colors in the gradient.
-		//draw.Draw(img, image.Rect(i*blockw,160,(i+1)*blockw,200), &image.Uniform{c1.BlendHcl(c2, float64(i)/float64(blocks-1)).Clamped()}, image.ZP, draw.Src)
+		//draw.Draw(img, image.Rect(i*blockw,160,(i+1)*blockw,200), &image.Uniform{c1.BlendHcl(c2, float64(i)/float64(blocks-1)).Clamped()}, image.Point{}, draw.Src)
 	}
 
 	toimg, err := os.Create("colorblend.png")

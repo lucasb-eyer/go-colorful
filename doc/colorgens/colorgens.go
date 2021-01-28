@@ -22,10 +22,10 @@ func main() {
 		fwarm := colorful.FastWarmColor()
 		happy := colorful.HappyColor()
 		fhappy := colorful.FastHappyColor()
-		draw.Draw(img, image.Rect(i*(blockw+space), 0, i*(blockw+space)+blockw, blockw), &image.Uniform{warm}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*(blockw+space), blockw+space, i*(blockw+space)+blockw, 2*blockw+space), &image.Uniform{fwarm}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*(blockw+space), 2*blockw+3*space, i*(blockw+space)+blockw, 3*blockw+3*space), &image.Uniform{happy}, image.ZP, draw.Src)
-		draw.Draw(img, image.Rect(i*(blockw+space), 3*blockw+4*space, i*(blockw+space)+blockw, 4*blockw+4*space), &image.Uniform{fhappy}, image.ZP, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), 0, i*(blockw+space)+blockw, blockw), &image.Uniform{warm}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), blockw+space, i*(blockw+space)+blockw, 2*blockw+space), &image.Uniform{fwarm}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), 2*blockw+3*space, i*(blockw+space)+blockw, 3*blockw+3*space), &image.Uniform{happy}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(i*(blockw+space), 3*blockw+4*space, i*(blockw+space)+blockw, 4*blockw+4*space), &image.Uniform{fhappy}, image.Point{}, draw.Src)
 	}
 
 	toimg, err := os.Create("colorgens.png")
