@@ -7,7 +7,7 @@ The format of this file is based on [Keep a Changelog](https://keepachangelog.co
 but only releases after v1.0.3 properly adhere to it.
 
 
-## [Unreleased]
+## [1.2.0] - 2021-01-27
 ### Added
 - HSLuv and HPLuv color spaces (#41, #51)
 - CIE LCh(uv) color space, called `LuvLCh` in code (#51)
