@@ -10,6 +10,9 @@ but only releases after v1.0.3 properly adhere to it.
 ### Added
 - `BlendLinearRgb` (#50)
 
+### Deprecated
+- `DistanceLinearRGB` is deprecated for the name `DistanceLinearRgb` which is more in-line with the rest of the library
+
 
 ## [1.2.0] - 2021-01-27
 This is the same as the v1.1.0 tag.
