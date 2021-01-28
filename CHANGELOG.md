@@ -12,6 +12,7 @@ but only releases after v1.0.3 properly adhere to it.
 - HSLuv and HPLuv color spaces (#41, #51)
 - CIE LCh(uv) color space, called `LuvLCh` in code (#51)
 - JSON and envconfig serialization support for `HexColor` (#42)
+- `DistanceLinearRGB` (#53)
 
 ### Fixed
 - RGB to/from XYZ conversion is more accurate (#51)

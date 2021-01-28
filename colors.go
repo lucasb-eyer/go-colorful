@@ -94,6 +94,15 @@ func (c1 Color) DistanceRgb(c2 Color) float64 {
 	return math.Sqrt(sq(c1.R-c2.R) + sq(c1.G-c2.G) + sq(c1.B-c2.B))
 }
 
+// DistanceLinearRGB computes the distance between two colors in linear RGB
+// space. This is not useful for measuring how humans perceive color, but
+// might be useful for other things, like dithering.
+func (c1 Color) DistanceLinearRGB(c2 Color) float64 {
+	r1, g1, b1 := c1.LinearRgb()
+	r2, g2, b2 := c2.LinearRgb()
+	return math.Sqrt(sq(r1-r2) + sq(g1-g2) + sq(b1-b2))
+}
+
 // Check for equality between colors within the tolerance Delta (1/255).
 func (c1 Color) AlmostEqualRgb(c2 Color) bool {
 	return math.Abs(c1.R-c2.R)+
