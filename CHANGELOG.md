@@ -19,6 +19,7 @@ but only releases after v1.0.3 properly adhere to it.
 - A bug in `XYZToLuvWhiteRef` that only applied to very small values was fixed (#51)
 - `BlendHCL` output is clamped so that it's not invalid (#46)
 - Properly documented `DistanceCIE76` (#40)
+- Some small godoc fixes
 
 
 ## [1.0.3] - 2019-11-11

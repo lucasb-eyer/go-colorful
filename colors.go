@@ -584,7 +584,7 @@ func (col Color) LabWhiteRef(wref [3]float64) (l, a, b float64) {
 
 // Generates a color by using data given in CIE L*a*b* space using D65 as reference white.
 // WARNING: many combinations of `l`, `a`, and `b` values do not have corresponding
-//          valid RGB values, check the FAQ in the README if you're unsure.
+// valid RGB values, check the FAQ in the README if you're unsure.
 func Lab(l, a, b float64) Color {
 	return Xyz(LabToXyz(l, a, b))
 }
@@ -818,8 +818,8 @@ func (col Color) LuvWhiteRef(wref [3]float64) (l, u, v float64) {
 
 // Generates a color by using data given in CIE L*u*v* space using D65 as reference white.
 // L* is in [0..1] and both u* and v* are in about [-1..1]
-// WARNING: many combinations of `l`, `a`, and `b` values do not have corresponding
-//          valid RGB values, check the FAQ in the README if you're unsure.
+// WARNING: many combinations of `l`, `u`, and `v` values do not have corresponding
+// valid RGB values, check the FAQ in the README if you're unsure.
 func Luv(l, u, v float64) Color {
 	return Xyz(LuvToXyz(l, u, v))
 }
@@ -886,7 +886,7 @@ func (col Color) HclWhiteRef(wref [3]float64) (h, c, l float64) {
 // Generates a color by using data given in HCL space using D65 as reference white.
 // H values are in [0..360], C and L values are in [0..1]
 // WARNING: many combinations of `h`, `c`, and `l` values do not have corresponding
-//          valid RGB values, check the FAQ in the README if you're unsure.
+// valid RGB values, check the FAQ in the README if you're unsure.
 func Hcl(h, c, l float64) Color {
 	return HclWhiteRef(h, c, l, D65)
 }
@@ -946,8 +946,8 @@ func (col Color) LuvLChWhiteRef(wref [3]float64) (l, c, h float64) {
 
 // Generates a color by using data given in LuvLCh space using D65 as reference white.
 // h values are in [0..360], C and L values are in [0..1]
-// WARNING: many combinations of `h`, `c`, and `l` values do not have corresponding
-//          valid RGB values, check the FAQ in the README if you're unsure.
+// WARNING: many combinations of `l`, `c`, and `h` values do not have corresponding
+// valid RGB values, check the FAQ in the README if you're unsure.
 func LuvLCh(l, c, h float64) Color {
 	return LuvLChWhiteRef(l, c, h, D65)
 }
