@@ -1,6 +1,7 @@
 go-colorful
 ===========
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/lucasb-eyer/go-colorful.svg)](https://pkg.go.dev/github.com/lucasb-eyer/go-colorful)
 [![go reportcard](https://goreportcard.com/badge/github.com/lucasb-eyer/go-colorful)](https://goreportcard.com/report/github.com/lucasb-eyer/go-colorful)
 
 A library for playing with colors in Go. Supports Go 1.13 onwards.
