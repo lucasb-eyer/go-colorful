@@ -376,7 +376,7 @@ The first row represents the input: a slice of 512 randomly chosen colors.  The 
 
 
 ### Using linear RGB for computations
-There are two methods for transforming RGB↔Linear RGB: a fast and almost precise one,
+There are two methods for transforming RGB⟷Linear RGB: a fast and almost precise one,
 and a slow and precise one.
 
 ```go
@@ -473,7 +473,7 @@ Who?
 ====
 
 This library was developed by Lucas Beyer with contributions from
-Bastien Dejean (@baskerville), Phil Kulak (@pkulak) and Christian Muehlhaeuser (@muesli).
+Bastien Dejean (@baskerville), Phil Kulak (@pkulak), Christian Muehlhaeuser (@muesli), and Scott Pakin (@spakin).
 
 It is now maintained by makeworld (@makeworld-the-better-one).
 
