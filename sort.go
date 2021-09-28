@@ -5,9 +5,56 @@ package colorful
 import (
 	"math"
 	"sort"
-
-	"github.com/spakin/disjoint"
 )
+
+// An element represents a single element of a set.  It is used to
+// implement a disjoint-set forest.
+type element struct {
+	parent *element // Parent element
+	rank   int      // Rank (approximate depth) of the subtree with this element as root
+}
+
+// newElement creates a singleton set and returns its sole element.
+func newElement() *element {
+	s := &element{}
+	s.parent = s
+	return s
+}
+
+// find returns an arbitrary element of a set when invoked on any element of
+// the set, The important feature is that it returns the same value when
+// invoked on any element of the set.  Consequently, it can be used to test if
+// two elements belong to the same set.
+func (e *element) find() *element {
+	for e.parent != e {
+		e.parent = e.parent.parent
+		e = e.parent
+	}
+	return e
+}
+
+// union establishes the union of two sets when given an element from each set.
+// Afterwards, the original sets no longer exist as separate entities.
+func union(e1, e2 *element) {
+	// Ensure the two elements aren't already part of the same union.
+	e1Root := e1.find()
+	e2Root := e2.find()
+	if e1Root == e2Root {
+		return
+	}
+
+	// Create a union by making the shorter tree point to the root of the
+	// larger tree.
+	switch {
+	case e1Root.rank < e2Root.rank:
+		e1Root.parent = e2Root
+	case e1Root.rank > e2Root.rank:
+		e2Root.parent = e1Root
+	default:
+		e2Root.parent = e1Root
+		e1Root.rank++
+	}
+}
 
 // An edgeIdxs describes an edge in a graph or tree.  The vertices in the edge
 // are indexes into a list of Color values.
@@ -48,21 +95,21 @@ func sortEdges(m edgeDistance) []edgeIdxs {
 // the tree, including both (u, v) and (v, u) for each edge.
 func minSpanTree(nc int, es []edgeIdxs) map[edgeIdxs]struct{} {
 	// Start with each vertex in its own set.
-	elts := make([]*disjoint.Element, nc)
+	elts := make([]*element, nc)
 	for i := range elts {
-		elts[i] = disjoint.NewElement()
+		elts[i] = newElement()
 	}
 
 	// Run Kruskal's algorithm to construct a minimal spanning tree.
 	mst := make(map[edgeIdxs]struct{}, nc)
 	for _, uv := range es {
 		u, v := uv[0], uv[1]
-		if elts[u].Find() == elts[v].Find() {
+		if elts[u].find() == elts[v].find() {
 			continue // Same set: edge would introduce a cycle.
 		}
 		mst[uv] = struct{}{}
 		mst[edgeIdxs{v, u}] = struct{}{}
-		disjoint.Union(elts[u], elts[v])
+		union(elts[u], elts[v])
 	}
 	return mst
 }
