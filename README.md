@@ -53,14 +53,6 @@ Nice, but what's it useful for?
 - Generating random colors under some constraints (e.g. colors of the same shade, or shades of one color.)
 - Generating gorgeous random palettes with distinct colors of a same temperature.
 
-What not (yet)?
-===============
-There are a few features which are currently missing and might be useful.
-I just haven't implemented them yet because I didn't have the need for it.
-Pull requests welcome.
-
-- Sorting colors (potentially using above mentioned distances)
-
 So which colorspace should I use?
 =================================
 It depends on what you want to do. I think the folks from *I want hue* are
@@ -373,10 +365,18 @@ from top to bottom: `Warm`, `FastWarm`, `Happy`, `FastHappy`, `Soft`,
 Again, the code used for generating the above image is available as [doc/palettegens/palettegens.go](https://github.com/lucasb-eyer/go-colorful/blob/master/doc/palettegens/palettegens.go).
 
 ### Sorting colors
-TODO: Sort using dist fn.
+
+Sorting colors is not a well-defined operation.  For example, {dark blue, dark red, light blue, light red} is already sorted if darker colors should precede lighter colors but would need to be re-sorted as {dark red, light red, dark blue, light blue} if longer-wavelength colors should precede shorter-wavelength colors.
+
+Go-Colorful's `Sorted` function orders a list of colors so as to minimize the average distance between adjacent colors, including between the last and the first.  (`Sorted` does not necessarily find the true minimum, only a reasonably close approximation.)  The following picture, drawn by [doc/colorsort/colorsort.go](https://github.com/lucasb-eyer/go-colorful/blob/master/doc/colorsort/colorsort.go), illustrates `Sorted`'s behavior:
+
+![Sorting colors](doc/colorsort/colorsort.png)
+
+The first row represents the input: a slice of 512 randomly chosen colors.  The second row shows the colors sorted in CIE-L\*C\*h° space, ordered first by lightness (L), then by hue angle (h), and finally by chroma (C).  Note that distracting pinstripes permeate the colors.  Sorting using *any* color space and *any* ordering of the channels yields a similar pinstriped pattern.  The third row of the image was sorted using Go-Colorful's `Sorted` function.  Although the colors do not appear to be in any particular order, the sequence at least appears smoother than the one sorted by channel.
+
 
 ### Using linear RGB for computations
-There are two methods for transforming RGB<->Linear RGB: a fast and almost precise one,
+There are two methods for transforming RGB⟷Linear RGB: a fast and almost precise one,
 and a slow and precise one.
 
 ```go
@@ -473,7 +473,7 @@ Who?
 ====
 
 This library was developed by Lucas Beyer with contributions from
-Bastien Dejean (@baskerville), Phil Kulak (@pkulak) and Christian Muehlhaeuser (@muesli).
+Bastien Dejean (@baskerville), Phil Kulak (@pkulak), Christian Muehlhaeuser (@muesli), and Scott Pakin (@spakin).
 
 It is now maintained by makeworld (@makeworld-the-better-one).
 
