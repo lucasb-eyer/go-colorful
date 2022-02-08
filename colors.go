@@ -221,6 +221,12 @@ func Hsv(H, S, V float64) Color {
 func (c1 Color) BlendHsv(c2 Color, t float64) Color {
 	h1, s1, v1 := c1.Hsv()
 	h2, s2, v2 := c2.Hsv()
+	
+	if s1 == 0 && s2 != 0 {
+		h1 = h2
+	} else if s2 == 0 && s1 != 0 {
+		h2 = h1
+	}
 
 	// We know that h are both in [0..360]
 	return Hsv(interp_angle(h1, h2, t), s1+t*(s2-s1), v1+t*(v2-v1))
@@ -949,6 +955,13 @@ func HclWhiteRef(h, c, l float64, wref [3]float64) Color {
 func (col1 Color) BlendHcl(col2 Color, t float64) Color {
 	h1, c1, l1 := col1.Hcl()
 	h2, c2, l2 := col2.Hcl()
+	
+		
+	if c1 <= 0.00015 && c2 >= 0.00015 {
+		h1 = h2
+	} else if c2 <= 0.00015 && c1 >= 0.00015 {
+		h2 = h1
+	}
 
 	// We know that h are both in [0..360]
 	return Hcl(interp_angle(h1, h2, t), c1+t*(c2-c1), l1+t*(l2-l1)).Clamped()
