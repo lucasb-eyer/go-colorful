@@ -421,6 +421,57 @@ func TestHclWhiteRefConversion(t *testing.T) {
 	}
 }
 
+/// Oklab ///
+/////////////
+// https://bottosson.github.io/posts/oklab/#table-of-example-xyz-and-oklab-pairs
+var xyzOklabCanonicalPairs = []struct {
+	x,
+	y,
+	z,
+	l,
+	a,
+	b float64
+}{
+		{0.950, 1.000, 1.089, 1.000, 0.000, 0.000},
+		{1.000, 0.000, 0.000, 0.450, 1.236, -0.019},
+		{0.000, 1.000, 0.000, 0.922, -0.671, 0.263},
+		{0.000, 0.000, 1.000, 0.153, -1.415, -0.449},
+}
+func round3(f float64) float64{
+	return math.Round(f*1000) / 1000
+}
+func TestOkLabXYZ(t *testing.T) {
+	for i, tCase := range xyzOklabCanonicalPairs{
+		l,a,b := XyzToOklab(tCase.x, tCase.y, tCase.z)
+		l,a,b = round3(l), round3(a), round3(b)
+		if l != tCase.l {
+			t.Errorf("%v. XyzToOklab => (%v), want %v (l)", i, l, tCase.l)
+		}
+		if a != tCase.a {
+			t.Errorf("%v. XyzToOklab => (%v), want %v (a)", i, a, tCase.a)
+		}
+		if b != tCase.b {
+			t.Errorf("%v. XyzToOklab => (%v), want %v (b)", i, b, tCase.b)
+		}
+	}
+}
+
+func TestXYZOklab(t *testing.T) {
+	for i, tCase := range xyzOklabCanonicalPairs{
+		x,y,z := OklabToXyz(tCase.l, tCase.a, tCase.b)
+		x,y,z = round3(x), round3(y), round3(z)
+		if x != tCase.x {
+			t.Errorf("%v. OklabToXyz => (%v), want %v (x)", i, x, tCase.x)
+		}
+		if y != tCase.y {
+			t.Errorf("%v. OklabToXyz => (%v), want %v (y)", i, y, tCase.y)
+		}
+		if z != tCase.z {
+			t.Errorf("%v. OklabToXyz => (%v), want %v (z)", i, z, tCase.z)
+		}
+	}
+}
+
 /// Test distances ///
 //////////////////////
 
