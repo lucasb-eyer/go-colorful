@@ -3,7 +3,10 @@ package colorful
 import (
 	"encoding/json"
 	"reflect"
+	"strings"
 	"testing"
+
+	"gopkg.in/yaml.v2"
 )
 
 func TestHexColor(t *testing.T) {
@@ -52,4 +55,44 @@ func TestHexColorCompositeJson(t *testing.T) {
 		t.Errorf("json.Unmarshal(json.Marsrhall(obj)) != obj")
 	}
 
+}
+
+func TestHexColorYaml(t *testing.T) {
+	obj := HexColor{R: 0, G: 1, B: 0}
+	want := "'#00ff00'\n"
+	raw, err := yaml.Marshal(&obj)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if strings.Compare(want, string(raw)) != 0 {
+		t.Errorf("Wanted '%s' got '%s'.", want, string(raw))
+	}
+
+	var got HexColor
+	err = yaml.Unmarshal(raw, &got)
+	if err != nil {
+		t.Error(err)
+	}
+	if obj != got {
+		t.Error(got)
+	}
+}
+
+func TestHexColorCompositeYaml(t *testing.T) {
+	obj := CompositeType{Name: "John", Color: HexColor{R: 0, G: 1, B: 0}}
+	raw, err := yaml.Marshal(&obj)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got CompositeType
+	err = yaml.Unmarshal(raw, &got)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !reflect.DeepEqual(got, obj) {
+		t.Errorf("yaml.Unmarshal(yaml.Marshal(obj)) != obj")
+	}
 }
