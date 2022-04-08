@@ -221,7 +221,8 @@ func Hsv(H, S, V float64) Color {
 func (c1 Color) BlendHsv(c2 Color, t float64) Color {
 	h1, s1, v1 := c1.Hsv()
 	h2, s2, v2 := c2.Hsv()
-	
+
+	// https://github.com/lucasb-eyer/go-colorful/pull/60
 	if s1 == 0 && s2 != 0 {
 		h1 = h2
 	} else if s2 == 0 && s1 != 0 {
@@ -955,8 +956,8 @@ func HclWhiteRef(h, c, l float64, wref [3]float64) Color {
 func (col1 Color) BlendHcl(col2 Color, t float64) Color {
 	h1, c1, l1 := col1.Hcl()
 	h2, c2, l2 := col2.Hcl()
-	
-		
+
+	// https://github.com/lucasb-eyer/go-colorful/pull/60
 	if c1 <= 0.00015 && c2 >= 0.00015 {
 		h1 = h2
 	} else if c2 <= 0.00015 && c1 >= 0.00015 {
