@@ -11,6 +11,7 @@ but only releases after v1.0.3 properly adhere to it.
 - `BlendLinearRgb` (#50)
 - `DistanceRiemersma` (#52)
 - Introduce a function for sorting colors (#57)
+- YAML marshal/unmarshal support (#63)
 
 ### Fixed
 - Fix bug when doing HSV/HCL blending between a gray color and non-gray color (#60)
