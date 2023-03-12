@@ -357,7 +357,7 @@ func Hsl(h, s, l float64) Color {
 // Hex returns the hex "html" representation of the color, as in #ff0080.
 func (col Color) Hex() string {
 	// Add 0.5 for rounding
-	return fmt.Sprintf("#%02x%02x%02x", uint8(col.R*255.0+0.5), uint8(col.G*255.0+0.5), uint8(col.B*255.0+0.5))
+	return fmt.Sprintf("#%02x%02x%02x", uint8(clamp01(col.R)*255.0+0.5), uint8(clamp01(col.G)*255.0+0.5), uint8(clamp01(col.B)*255.0+0.5))
 }
 
 // Hex parses a "html" hex color-string, either in the 3 "#f0c" or 6 "#ff1034" digits form.
