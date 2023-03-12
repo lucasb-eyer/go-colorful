@@ -645,3 +645,22 @@ func TestInterpolation(t *testing.T) {
 		}
 	}
 }
+
+func TestHexOverflow(t *testing.T) {
+	// Converting LUV to RGB can result in R, G, or B values below 0 or greater than 1.
+	// This causes problems especially when converting those RGB values to hex.
+	// A RGB value below 0 should be represented as 0,
+	// one above 1 should be represented as 1
+	for _, tc := range []struct {
+		color       Color
+		expectedHex string
+	}{
+		{color: Color{1.1, 1.0, 1.0}, expectedHex: "#ffffff"},
+		{color: Color{-0.1, 0.0, 0.0}, expectedHex: "#000000"},
+	} {
+		res := tc.color.Hex()
+		if res != tc.expectedHex {
+			t.Errorf("Hex(%v) => (%v), want %v", tc.color, res, tc.expectedHex)
+		}
+	}
+}
