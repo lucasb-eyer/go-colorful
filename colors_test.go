@@ -421,6 +421,129 @@ func TestHclWhiteRefConversion(t *testing.T) {
 	}
 }
 
+// / Oklab ///
+// ///////////
+
+func TestRgbToOkLab(t *testing.T) {
+	for i, tCase := range []struct {
+		R, G, B float64
+		l, a, b float64
+	}{
+		{1, 1, 1, 1.000, 0.000, 0.000},            // white
+		{1, 0, 0, 0.627955, 0.224863, 0.125846},   // red
+		{0, 1, 0, 0.86644, -0.233888, 0.179498},   // lime
+		{0, 0, 1, 0.452014, -0.032457, -0.311528}, // blue
+		{0, 1, 1, 0.905399, -0.149444, -0.039398}, // cyan
+		{1, 0, 1, 0.701674, 0.274566, -0.169156},  // magenta
+		{1, 1, 0, 0.967983, -0.071369, 0.198570},  // yellow
+		{0, 0, 0, 0.000000, 0.000000, 0.000000},   // black
+	} {
+		l, a, b := XyzToOkLab(LinearRgb(tCase.R, tCase.G, tCase.B).Xyz())
+		if !almosteq(l, tCase.l) {
+			t.Errorf("%v. RgbToOklab => (%v), want %v (l)", i, l, tCase.l)
+		}
+		if !almosteq(a, tCase.a) {
+			t.Errorf("%v. RgbToOklab => (%v), want %v (a)", i, a, tCase.a)
+		}
+		if !almosteq(b, tCase.b) {
+			t.Errorf("%v. RgbToOklab => (%v), want %v (b)", i, b, tCase.b)
+		}
+	}
+}
+
+// https://bottosson.github.io/posts/oklab/#table-of-example-xyz-and-oklab-pairs
+var xyzOklabPairs = []struct {
+	x, y, z float64
+	l, a, b float64
+}{
+	{0.950, 1.000, 1.089, 1.000, 0.000, 0.000},
+	{1.000, 0.000, 0.000, 0.450, 1.236, -0.019},
+	{0.000, 1.000, 0.000, 0.922, -0.671, 0.263},
+	{0.000, 0.000, 1.000, 0.153, -1.415, -0.449},
+}
+
+func TestXyzToOkLab(t *testing.T) {
+	for i, tCase := range xyzOklabPairs {
+		l, a, b := XyzToOkLab(tCase.x, tCase.y, tCase.z)
+		if !almosteq(l, tCase.l) {
+			t.Errorf("%v. XyzToOklab => (%v), want %v (l)", i, l, tCase.l)
+		}
+		if !almosteq(a, tCase.a) {
+			t.Errorf("%v. XyzToOklab => (%v), want %v (a)", i, a, tCase.a)
+		}
+		if !almosteq(b, tCase.b) {
+			t.Errorf("%v. XyzToOklab => (%v), want %v (b)", i, b, tCase.b)
+		}
+	}
+}
+
+func TestOklabToXyz(t *testing.T) {
+	for i, tCase := range xyzOklabPairs {
+		x, y, z := OkLabToXyz(tCase.l, tCase.a, tCase.b)
+		if !almosteq(x, tCase.x) {
+			t.Errorf("%v. OklabToXyz => (%v), want %v (x)", i, x, tCase.x)
+		}
+		if !almosteq(y, tCase.y) {
+			t.Errorf("%v. OklabToXyz => (%v), want %v (y)", i, y, tCase.y)
+		}
+		if !almosteq(z, tCase.z) {
+			t.Errorf("%v. OklabToXyz => (%v), want %v (z)", i, z, tCase.z)
+		}
+	}
+}
+
+var OkPairs = []struct {
+	lab [3]float64
+	lch [3]float64
+}{
+	{
+		[3]float64{55.0, 0.17, -0.14},   // oklab
+		[3]float64{55.0, 0.22, 320.528}, // oklch
+	},
+	{
+		[3]float64{90.0, 0.32, 0.00}, // oklab
+		[3]float64{90.0, 0.32, 0.0},  // oklch
+	},
+	{
+		[3]float64{10.0, 0.00, -0.40}, // oklab
+		[3]float64{10.0, 0.40, 270.0}, // oklch
+	},
+}
+
+func TestOkLabToOkLch(t *testing.T) {
+	for i, tc := range OkPairs {
+		l, c, h := OkLabToOkLch(tc.lab[0], tc.lab[1], tc.lab[2])
+		if !almosteq(l, tc.lch[0]) {
+			t.Errorf("%d. l returned %v, expected %v", i, l, tc.lch[0])
+		}
+
+		if !almosteq(c, tc.lch[1]) {
+			t.Errorf("%d. c returned %v, expected %v", i, c, tc.lch[1])
+		}
+
+		if !almosteq(h, tc.lch[2]) {
+			t.Errorf("%d. h returned %v, expected %v", i, h, tc.lch[2])
+		}
+	}
+}
+
+func TestOkLchToOkLab(t *testing.T) {
+	for i, tc := range OkPairs {
+		l, a, b := OkLchToOkLab(tc.lch[0], tc.lch[1], tc.lch[2])
+		if !almosteq(l, tc.lab[0]) {
+			t.Errorf("%d. l returned %v, expected %v", i, l, tc.lab[0])
+		}
+
+		if !almosteq(a, tc.lab[1]) {
+			t.Errorf("%d. a returned %v, expected %v", i, a, tc.lab[1])
+		}
+
+		if !almosteq(b, tc.lab[2]) {
+			t.Errorf("%d. b returned %v, expected %v", i, b, tc.lab[2])
+		}
+	}
+}
+
 /// Test distances ///
 //////////////////////
 
