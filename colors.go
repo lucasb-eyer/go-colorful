@@ -1038,6 +1038,10 @@ func (col Color) OkLab() (l, a, b float64) {
 	return XyzToOkLab(col.Xyz())
 }
 
+func OkLab(l, a, b float64) Color {
+	return Xyz(OkLabToXyz(l, a, b))
+}
+
 func XyzToOkLab(x, y, z float64) (l, a, b float64) {
 	l_ := math.Cbrt(0.8189330101*x + 0.3618667424*y - 0.1288597137*z)
 	m_ := math.Cbrt(0.0329845436*x + 0.9293118715*y + 0.0361456387*z)
@@ -1069,6 +1073,10 @@ func OkLabToXyz(l, a, b float64) (x, y, z float64) {
 
 func (col Color) OkLch() (l, c, h float64) {
 	return OkLabToOkLch(col.OkLab())
+}
+
+func OkLch(l, c, h float64) Color {
+	return Xyz(OkLchToXyz(l, c, h))
 }
 
 func XyzToOkLch(x, y, z float64) (float64, float64, float64) {
