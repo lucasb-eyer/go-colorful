@@ -115,8 +115,8 @@ func (c1 Color) DistanceLinearRGB(c2 Color) float64 {
 //
 // Sources:
 //
-//     https://www.compuphase.com/cmetric.htm
-//     https://github.com/lucasb-eyer/go-colorful/issues/52
+//	https://www.compuphase.com/cmetric.htm
+//	https://github.com/lucasb-eyer/go-colorful/issues/52
 func (c1 Color) DistanceRiemersma(c2 Color) float64 {
 	rAvg := (c1.R + c2.R) / 2.0
 	// Deltas
@@ -136,9 +136,11 @@ func (c1 Color) AlmostEqualRgb(c2 Color) bool {
 
 // You don't really want to use this, do you? Go for BlendLab, BlendLuv or BlendHcl.
 func (c1 Color) BlendRgb(c2 Color, t float64) Color {
-	return Color{c1.R + t*(c2.R-c1.R),
+	return Color{
+		c1.R + t*(c2.R-c1.R),
 		c1.G + t*(c2.G-c1.G),
-		c1.B + t*(c2.B-c1.B)}
+		c1.B + t*(c2.B-c1.B),
+	}
 }
 
 // Utility used by Hxx color-spaces for interpolating between two angles in [0,360].
@@ -408,7 +410,7 @@ func linearize_fast(v float64) float64 {
 	v2 := v1 * v1
 	v3 := v2 * v1
 	v4 := v2 * v2
-	//v5 := v3*v2
+	// v5 := v3*v2
 	return -0.248750514614486 + 0.925583310193438*v + 1.16740237321695*v2 + 0.280457026598666*v3 - 0.0757991963780179*v4 //+ 0.0437040411548932*v5
 }
 
@@ -828,7 +830,7 @@ func LuvToXyz(l, u, v float64) (x, y, z float64) {
 }
 
 func LuvToXyzWhiteRef(l, u, v float64, wref [3]float64) (x, y, z float64) {
-	//y = wref[1] * lab_finv((l + 0.16) / 1.16)
+	// y = wref[1] * lab_finv((l + 0.16) / 1.16)
 	if l <= 0.08 {
 		y = wref[1] * l * 100.0 * 3.0 / 29.0 * 3.0 / 29.0 * 3.0 / 29.0
 	} else {
@@ -1027,4 +1029,79 @@ func (col1 Color) BlendLuvLCh(col2 Color, t float64) Color {
 
 	// We know that h are both in [0..360]
 	return LuvLCh(l1+t*(l2-l1), c1+t*(c2-c1), interp_angle(h1, h2, t))
+}
+
+/// OkLab ///
+///////////
+
+func (col Color) OkLab() (l, a, b float64) {
+	return XyzToOkLab(col.Xyz())
+}
+
+func OkLab(l, a, b float64) Color {
+	return Xyz(OkLabToXyz(l, a, b))
+}
+
+func XyzToOkLab(x, y, z float64) (l, a, b float64) {
+	l_ := math.Cbrt(0.8189330101*x + 0.3618667424*y - 0.1288597137*z)
+	m_ := math.Cbrt(0.0329845436*x + 0.9293118715*y + 0.0361456387*z)
+	s_ := math.Cbrt(0.0482003018*x + 0.2643662691*y + 0.6338517070*z)
+	l = 0.2104542553*l_ + 0.7936177850*m_ - 0.0040720468*s_
+	a = 1.9779984951*l_ - 2.4285922050*m_ + 0.4505937099*s_
+	b = 0.0259040371*l_ + 0.7827717662*m_ - 0.8086757660*s_
+	return
+}
+
+func OkLabToXyz(l, a, b float64) (x, y, z float64) {
+	l_ := 0.9999999984505196*l + 0.39633779217376774*a + 0.2158037580607588*b
+	m_ := 1.0000000088817607*l - 0.10556134232365633*a - 0.0638541747717059*b
+	s_ := 1.0000000546724108*l - 0.08948418209496574*a - 1.2914855378640917*b
+
+	ll := math.Pow(l_, 3)
+	m := math.Pow(m_, 3)
+	s := math.Pow(s_, 3)
+
+	x = 1.2268798733741557*ll - 0.5578149965554813*m + 0.28139105017721594*s
+	y = -0.04057576262431372*ll + 1.1122868293970594*m - 0.07171106666151696*s
+	z = -0.07637294974672142*ll - 0.4214933239627916*m + 1.5869240244272422*s
+
+	return
+}
+
+/// OkLch ///
+///////////
+
+func (col Color) OkLch() (l, c, h float64) {
+	return OkLabToOkLch(col.OkLab())
+}
+
+func OkLch(l, c, h float64) Color {
+	return Xyz(OkLchToXyz(l, c, h))
+}
+
+func XyzToOkLch(x, y, z float64) (float64, float64, float64) {
+	l, c, h := OkLabToOkLch(XyzToOkLab(x, y, z))
+	return l, c, h
+}
+
+func OkLchToXyz(l, c, h float64) (float64, float64, float64) {
+	x, y, z := OkLabToXyz(OkLchToOkLab(l, c, h))
+	return x, y, z
+}
+
+func OkLabToOkLch(l, a, b float64) (float64, float64, float64) {
+	c := math.Sqrt((a * a) + (b * b))
+	h := math.Atan2(b, a)
+	if h < 0 {
+		h += 2 * math.Pi
+	}
+
+	return l, c, h * 180 / math.Pi
+}
+
+func OkLchToOkLab(l, c, h float64) (float64, float64, float64) {
+	h *= math.Pi / 180
+	a := c * math.Cos(h)
+	b := c * math.Sin(h)
+	return l, a, b
 }
