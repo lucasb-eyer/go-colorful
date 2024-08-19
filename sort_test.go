@@ -14,12 +14,12 @@ func TestSortSimple(t *testing.T) {
 
 	// Ensure the output matches what we expected.
 	exp := []Color{
-		Color{R: 0.25, G: 0.0, B: 0},
-		Color{R: 0.50, G: 0.0, B: 0},
-		Color{R: 0.75, G: 0.0, B: 0},
-		Color{R: 0.0, G: 0.0, B: 0.25},
-		Color{R: 0.0, G: 0.0, B: 0.50},
-		Color{R: 0.0, G: 0.0, B: 0.75},
+		{R: 0.25, G: 0.0, B: 0},
+		{R: 0.50, G: 0.0, B: 0},
+		{R: 0.75, G: 0.0, B: 0},
+		{R: 0.0, G: 0.0, B: 0.25},
+		{R: 0.0, G: 0.0, B: 0.50},
+		{R: 0.0, G: 0.0, B: 0.75},
 	}
 	for i, e := range exp {
 		if out[i] != e {

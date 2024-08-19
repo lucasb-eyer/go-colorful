@@ -266,8 +266,8 @@ func BenchmarkFastLinearToColor(bench *testing.B) {
 	bench_result = c.R + c.G + c.B
 }
 
-/// XYZ ///
-///////////
+// / XYZ ///
+// /////////
 func TestXyzCreation(t *testing.T) {
 	for i, tt := range vals {
 		c := Xyz(tt.xyz[0], tt.xyz[1], tt.xyz[2])
@@ -286,8 +286,8 @@ func TestXyzConversion(t *testing.T) {
 	}
 }
 
-/// xyY ///
-///////////
+// / xyY ///
+// /////////
 func TestXyyCreation(t *testing.T) {
 	for i, tt := range vals {
 		c := Xyy(tt.xyy[0], tt.xyy[1], tt.xyy[2])
@@ -306,8 +306,8 @@ func TestXyyConversion(t *testing.T) {
 	}
 }
 
-/// L*a*b* ///
-//////////////
+// / L*a*b* ///
+// ////////////
 func TestLabCreation(t *testing.T) {
 	for i, tt := range vals {
 		c := Lab(tt.lab[0], tt.lab[1], tt.lab[2])
@@ -344,8 +344,8 @@ func TestLabWhiteRefConversion(t *testing.T) {
 	}
 }
 
-/// L*u*v* ///
-//////////////
+// / L*u*v* ///
+// ////////////
 func TestLuvCreation(t *testing.T) {
 	for i, tt := range vals {
 		c := Luv(tt.luv[0], tt.luv[1], tt.luv[2])
@@ -382,8 +382,8 @@ func TestLuvWhiteRefConversion(t *testing.T) {
 	}
 }
 
-/// HCL ///
-///////////
+// / HCL ///
+// /////////
 // CIE-L*a*b* in polar coordinates.
 func TestHclCreation(t *testing.T) {
 	for i, tt := range vals {
