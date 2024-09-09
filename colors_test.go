@@ -716,6 +716,24 @@ func TestIssue11(t *testing.T) {
 	if blend != c2hex {
 		t.Errorf("Issue11: %v --LuvLCh-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
 	}
+
+	blend = c1.BlendOkLab(c2, 0).Hex()
+	if blend != c1hex {
+		t.Errorf("Issue11: %v --OkLab-> %v = %v, want %v", c1hex, c2hex, blend, c1hex)
+	}
+	blend = c1.BlendOkLab(c2, 1).Hex()
+	if blend != c2hex {
+		t.Errorf("Issue11: %v --OkLab-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
+	}
+
+	blend = c1.BlendOkLch(c2, 0).Hex()
+	if blend != c1hex {
+		t.Errorf("Issue11: %v --OkLch-> %v = %v, want %v", c1hex, c2hex, blend, c1hex)
+	}
+	blend = c1.BlendOkLch(c2, 1).Hex()
+	if blend != c2hex {
+		t.Errorf("Issue11: %v --OkLch-> %v = %v, want %v", c1hex, c2hex, blend, c2hex)
+	}
 }
 
 // For testing angular interpolation internal function
