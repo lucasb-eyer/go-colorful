@@ -1068,6 +1068,15 @@ func OkLabToXyz(l, a, b float64) (x, y, z float64) {
 	return
 }
 
+// BlendOkLab blends two colors in the OkLab color-space, which should result in a better blend (even compared to BlendLab).
+func (c1 Color) BlendOkLab(c2 Color, t float64) Color {
+	l1, a1, b1 := c1.OkLab()
+	l2, a2, b2 := c2.OkLab()
+	return OkLab(l1+t*(l2-l1),
+		a1+t*(a2-a1),
+		b1+t*(b2-b1))
+}
+
 /// OkLch ///
 ///////////
 
@@ -1105,3 +1114,20 @@ func OkLchToOkLab(l, c, h float64) (float64, float64, float64) {
 	b := c * math.Sin(h)
 	return l, a, b
 }
+
+// BlendOkLch blends two colors in the OkLch color-space, which should result in a better blend (even compared to BlendHcl).
+func (col1 Color) BlendOkLch(col2 Color, t float64) Color {
+	l1, c1, h1 := col1.OkLch()
+	l2, c2, h2 := col2.OkLch()
+
+	// https://github.com/lucasb-eyer/go-colorful/pull/60
+	if c1 <= 0.00015 && c2 >= 0.00015 {
+		h1 = h2
+	} else if c2 <= 0.00015 && c1 >= 0.00015 {
+		h2 = h1
+	}
+
+	// We know that h are both in [0..360]
+	return OkLch(l1+t*(l2-l1), c1+t*(c2-c1), interp_angle(h1, h2, t)).Clamped()
+}
+
