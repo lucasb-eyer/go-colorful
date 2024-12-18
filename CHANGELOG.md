@@ -18,6 +18,7 @@ but only releases after v1.0.3 properly adhere to it.
 
 ### Fixed
 - Fix bug when doing HSV/HCL blending between a gray color and non-gray color (#60)
+- Docs for HSV/HSL were updated to note that hue 360 is not allowed (#71)
 
 ### Deprecated
 - `DistanceLinearRGB` is deprecated for the name `DistanceLinearRgb` which is more in-line with the rest of the library

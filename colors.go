@@ -154,9 +154,9 @@ func interp_angle(a0, a1, t float64) float64 {
 /// HSV ///
 ///////////
 // From http://en.wikipedia.org/wiki/HSL_and_HSV
-// Note that h is in [0..360] and s,v in [0..1]
+// Note that h is in [0..359] and s,v in [0..1]
 
-// Hsv returns the Hue [0..360], Saturation and Value [0..1] of the color.
+// Hsv returns the Hue [0..359], Saturation and Value [0..1] of the color.
 func (col Color) Hsv() (h, s, v float64) {
 	min := math.Min(math.Min(col.R, col.G), col.B)
 	v = math.Max(math.Max(col.R, col.G), col.B)
@@ -186,7 +186,7 @@ func (col Color) Hsv() (h, s, v float64) {
 	return
 }
 
-// Hsv creates a new Color given a Hue in [0..360], a Saturation and a Value in [0..1]
+// Hsv creates a new Color given a Hue in [0..359], a Saturation and a Value in [0..1]
 func Hsv(H, S, V float64) Color {
 	Hp := H / 60.0
 	C := V * S
@@ -238,7 +238,7 @@ func (c1 Color) BlendHsv(c2 Color, t float64) Color {
 /// HSL ///
 ///////////
 
-// Hsl returns the Hue [0..360], Saturation [0..1], and Luminance (lightness) [0..1] of the color.
+// Hsl returns the Hue [0..359], Saturation [0..1], and Luminance (lightness) [0..1] of the color.
 func (col Color) Hsl() (h, s, l float64) {
 	min := math.Min(math.Min(col.R, col.G), col.B)
 	max := math.Max(math.Max(col.R, col.G), col.B)
@@ -273,7 +273,7 @@ func (col Color) Hsl() (h, s, l float64) {
 	return
 }
 
-// Hsl creates a new Color given a Hue in [0..360], a Saturation [0..1], and a Luminance (lightness) in [0..1]
+// Hsl creates a new Color given a Hue in [0..359], a Saturation [0..1], and a Luminance (lightness) in [0..1]
 func Hsl(h, s, l float64) Color {
 	if s == 0 {
 		return Color{l, l, l}
@@ -1130,4 +1130,3 @@ func (col1 Color) BlendOkLch(col2 Color, t float64) Color {
 	// We know that h are both in [0..360]
 	return OkLch(l1+t*(l2-l1), c1+t*(c2-c1), interp_angle(h1, h2, t)).Clamped()
 }
-
