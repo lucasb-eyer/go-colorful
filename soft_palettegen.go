@@ -6,7 +6,6 @@ package colorful
 import (
 	"fmt"
 	"math"
-	"math/rand"
 )
 
 // The algorithm works in L*a*b* color space and converts to RGB in the end.
@@ -32,7 +31,7 @@ type SoftPaletteSettings struct {
 // as a new palette of distinctive colors. Falls back to K-medoid if the mean
 // happens to fall outside of the color-space, which can only happen if you
 // specify a CheckColor function.
-func SoftPaletteEx(colorsCount int, settings SoftPaletteSettings) ([]Color, error) {
+func SoftPaletteExWithRand(colorsCount int, settings SoftPaletteSettings, rand RandInterface) ([]Color, error) {
 
 	// Checks whether it's a valid RGB and also fulfills the potentially provided constraint.
 	check := func(col lab_t) bool {
@@ -148,9 +147,17 @@ func SoftPaletteEx(colorsCount int, settings SoftPaletteSettings) ([]Color, erro
 	return labs2cols(means), nil
 }
 
+func SoftPaletteEx(colorsCount int, settings SoftPaletteSettings) ([]Color, error) {
+	return SoftPaletteExWithRand(colorsCount, settings, getDefaultGlobalRand())
+}
+
 // A wrapper which uses common parameters.
+func SoftPaletteWithRand(colorsCount int, rand RandInterface) ([]Color, error) {
+	return SoftPaletteExWithRand(colorsCount, SoftPaletteSettings{nil, 50, false}, rand)
+}
+
 func SoftPalette(colorsCount int) ([]Color, error) {
-	return SoftPaletteEx(colorsCount, SoftPaletteSettings{nil, 50, false})
+	return SoftPaletteWithRand(colorsCount, getDefaultGlobalRand())
 }
 
 func in(haystack []lab_t, upto int, needle lab_t) bool {

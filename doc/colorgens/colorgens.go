@@ -1,27 +1,32 @@
 package main
 
-import "fmt"
-import "github.com/lucasb-eyer/go-colorful"
-import "image"
-import "image/draw"
-import "image/png"
-import "math/rand"
-import "os"
-import "time"
+import (
+	"fmt"
+	"image"
+	"image/draw"
+	"image/png"
+	"math/rand"
+	"os"
+	"time"
+
+	"github.com/lucasb-eyer/go-colorful"
+)
 
 func main() {
 	blocks := 10
 	blockw := 40
 	space := 5
 
-	rand.Seed(time.Now().UTC().UnixNano())
+	seed := time.Now().UTC().UnixNano()
+
+	rand := rand.New(rand.NewSource(seed))
 	img := image.NewRGBA(image.Rect(0, 0, blocks*blockw+space*(blocks-1), 4*(blockw+space)))
 
 	for i := 0; i < blocks; i++ {
-		warm := colorful.WarmColor()
-		fwarm := colorful.FastWarmColor()
-		happy := colorful.HappyColor()
-		fhappy := colorful.FastHappyColor()
+		warm := colorful.WarmColorWithRand(rand)
+		fwarm := colorful.FastWarmColorWithRand(rand)
+		happy := colorful.HappyColorWithRand(rand)
+		fhappy := colorful.FastHappyColorWithRand(rand)
 		draw.Draw(img, image.Rect(i*(blockw+space), 0, i*(blockw+space)+blockw, blockw), &image.Uniform{warm}, image.Point{}, draw.Src)
 		draw.Draw(img, image.Rect(i*(blockw+space), blockw+space, i*(blockw+space)+blockw, 2*blockw+space), &image.Uniform{fwarm}, image.Point{}, draw.Src)
 		draw.Draw(img, image.Rect(i*(blockw+space), 2*blockw+3*space, i*(blockw+space)+blockw, 3*blockw+3*space), &image.Uniform{happy}, image.Point{}, draw.Src)

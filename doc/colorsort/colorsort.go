@@ -17,7 +17,7 @@ import (
 )
 
 // randomColors produces a slice of random colors.
-func randomColors(n int) []colorful.Color {
+func randomColors(n int, rand colorful.RandInterface) []colorful.Color {
 	cs := make([]colorful.Color, n)
 	for i := range cs {
 		cs[i] = colorful.Color{
@@ -49,7 +49,7 @@ func writeImage(fn string, img image.Image) {
 		panic(err)
 	}
 	defer w.Close()
-	png.Encode(w, img)
+	err = png.Encode(w, img)
 	if err != nil {
 		panic(err)
 	}
@@ -57,8 +57,9 @@ func writeImage(fn string, img image.Image) {
 
 func main() {
 	n := 512
-	rand.Seed(8675309)
-	cs1 := randomColors(n)
+	const SEED = 8675309
+	rand := rand.New(rand.NewSource(SEED))
+	cs1 := randomColors(n, rand)
 	cs2 := make([]colorful.Color, n)
 	copy(cs2, cs1)
 	sort.Slice(cs2, func(i, j int) bool {
