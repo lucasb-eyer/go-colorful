@@ -132,7 +132,7 @@ alpha colors, this means the RGB values are lost (set to 0) and it's impossible
 to recover them. In such a case `MakeColor` will return `false` as its second value.
 
 ### Comparing colors
-In the RGB color space, the Euclidian distance between colors *doesn't* correspond
+In the RGB color space, the Euclidean distance between colors *doesn't* correspond
 to visual/perceptual distance. This means that two pairs of colors which have the
 same distance in RGB space can look much further apart. This is fixed by the
 CIE-L\*a\*b\*, CIE-L\*u\*v\* and CIE-L\*C\*h° color spaces.
@@ -201,7 +201,7 @@ What you see is that HSV is really bad: it adds some green, which is not present
 in the original colors at all! RGB is much better, but it stays light a little
 too long. LUV and LAB both hit the right lightness but LAB has a little more
 color. HCL works in the same vein as HSV (both cylindrical interpolations) but
-it does it right in that there is no green appearing and the lighthness changes
+it does it right in that there is no green appearing and the lightness changes
 in a linear manner.
 
 While this seems all good, you need to know one thing: When interpolating in any
@@ -309,11 +309,11 @@ generating this picture in `doc/colorgens/colorgens.go`.
 
 ### Getting random palettes
 As soon as you need to generate more than one random color, you probably want
-them to be distinguishible. Playing against an opponent which has almost the
+them to be distinguishable. Playing against an opponent which has almost the
 same blue as I do is not fun. This is where random palettes can help.
 
 These palettes are generated using an algorithm which ensures that all colors
-on the palette are as distinguishible as possible. Again, there is a `Fast`
+on the palette are as distinguishable as possible. Again, there is a `Fast`
 method which works in HSV and is less perceptually uniform and a non-`Fast`
 method which works in CIE spaces. For more theory on `SoftPalette`, check out
 [I want hue](http://tools.medialab.sciences-po.fr/iwanthue/theory.php). Yet

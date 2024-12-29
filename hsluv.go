@@ -116,7 +116,7 @@ func (col Color) HPLuv() (h, s, l float64) {
 	return LuvLChToHPLuv(col.LuvLChWhiteRef(hSLuvD65))
 }
 
-// DistanceHSLuv calculates Euclidan distance in the HSLuv colorspace. No idea
+// DistanceHSLuv calculates Euclidean distance in the HSLuv colorspace. No idea
 // how useful this is.
 //
 // The Hue value is divided by 100 before the calculation, so that H, S, and L
