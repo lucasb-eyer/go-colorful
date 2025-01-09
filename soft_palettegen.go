@@ -78,7 +78,7 @@ func SoftPaletteExWithRand(colorsCount int, settings SoftPaletteSettings, rand R
 
 	// The actual k-means/medoid iterations
 	for i := 0; i < settings.Iterations; i++ {
-		// Reassing the samples to clusters, i.e. to their closest mean.
+		// Reassigning the samples to clusters, i.e. to their closest mean.
 		// By the way, also check if any sample is used as a medoid and if so, mark that.
 		for isample, sample := range samples {
 			samples_used[isample] = false
@@ -99,7 +99,7 @@ func SoftPaletteExWithRand(colorsCount int, settings SoftPaletteSettings, rand R
 
 		// Compute new means according to the samples.
 		for imean := range means {
-			// The new mean is the average of all samples belonging to it..
+			// The new mean is the average of all samples belonging to it.
 			nsamples := 0
 			newmean := lab_t{0.0, 0.0, 0.0}
 			for isample, sample := range samples {
