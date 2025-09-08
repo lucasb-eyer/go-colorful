@@ -365,7 +365,7 @@ func (col Color) Hex() string {
 
 // Hex parses a "html" hex color-string, either in the 3 "#f0c" or 6 "#ff1034" digits form.
 func Hex(scol string) (Color, error) {
-	if scol[0] != '#' {
+	if scol == "" || scol[0] != '#' {
 		return Color{}, fmt.Errorf("color: %v is not a hex-color", scol)
 	}
 	var c Color
