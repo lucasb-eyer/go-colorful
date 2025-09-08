@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image/color"
 	"math"
+	"strconv"
 )
 
 // A color is stored internally using sRGB (standard RGB) values in the range 0-1
@@ -364,23 +365,46 @@ func (col Color) Hex() string {
 
 // Hex parses a "html" hex color-string, either in the 3 "#f0c" or 6 "#ff1034" digits form.
 func Hex(scol string) (Color, error) {
-	format := "#%02x%02x%02x"
-	factor := 1.0 / 255.0
-	if len(scol) == 4 {
-		format = "#%1x%1x%1x"
-		factor = 1.0 / 15.0
-	}
-
-	var r, g, b uint8
-	n, err := fmt.Sscanf(scol, format, &r, &g, &b)
-	if err != nil {
-		return Color{}, err
-	}
-	if n != 3 {
+	if scol == "" || scol[0] != '#' {
 		return Color{}, fmt.Errorf("color: %v is not a hex-color", scol)
 	}
+	var c Color
+	var err error
+	switch len(scol) {
+	case 4:
+		c, err = parseHexColor(scol[1:2], scol[2:3], scol[3:4], 4, 1.0/15.0)
+	case 7:
+		c, err = parseHexColor(scol[1:3], scol[3:5], scol[5:7], 8, 1.0/255.0)
+	default:
+		return Color{}, fmt.Errorf("color: %v is not a hex-color", scol)
+	}
+	if err != nil {
+		return Color{}, fmt.Errorf("color: %v is not a hex-color: %w", scol, err)
+	}
+	return c, nil
+}
 
-	return Color{float64(r) * factor, float64(g) * factor, float64(b) * factor}, nil
+func parseHexColor(r, g, b string, bits int, factor float64) (Color, error) {
+	var c Color
+	var v uint64
+	var err error
+
+	if v, err = strconv.ParseUint(r, 16, bits); err != nil {
+		return Color{}, err
+	}
+	c.R = float64(v) * factor
+
+	if v, err = strconv.ParseUint(g, 16, bits); err != nil {
+		return Color{}, err
+	}
+	c.G = float64(v) * factor
+
+	if v, err = strconv.ParseUint(b, 16, bits); err != nil {
+		return Color{}, err
+	}
+	c.B = float64(v) * factor
+
+	return c, err
 }
 
 /// Linear ///

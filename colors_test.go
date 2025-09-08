@@ -199,6 +199,15 @@ func TestHexConversion(t *testing.T) {
 	}
 }
 
+func BenchmarkHex(b *testing.B) {
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		if _, err := Hex("#FFFFFF"); err != nil {
+			b.Errorf("Hex failed: %v", err)
+		}
+	}
+}
+
 /// Linear ///
 //////////////
 
