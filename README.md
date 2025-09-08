@@ -475,7 +475,7 @@ Who?
 This library was developed by Lucas Beyer with contributions from
 Bastien Dejean (@baskerville), Phil Kulak (@pkulak), Christian Muehlhaeuser (@muesli), and Scott Pakin (@spakin).
 
-It is now maintained by makeworld (@makeworld-the-better-one).
+It is now maintained by makeworld (@makew0rld).
 
 
 ## License

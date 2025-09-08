@@ -7,6 +7,8 @@ The format of this file is based on [Keep a Changelog](https://keepachangelog.co
 but only releases after v1.0.3 properly adhere to it.
 
 ## [Unreleased]
+
+## [1.3.0] - 2025-09-08
 ### Added
 - `BlendLinearRgb` (#50)
 - `DistanceRiemersma` (#52)
@@ -15,6 +17,9 @@ but only releases after v1.0.3 properly adhere to it.
 - Add support for OkLab and OkLch (#66)
 - Functions that use randomness now support specifying a custom source (#73)
 - Functions BlendOkLab and BlendOkLch (#70)
+
+## Changed
+- `Hex()` parsing is much faster (#78)
 
 ### Fixed
 - Fix bug when doing HSV/HCL blending between a gray color and non-gray color (#60)
