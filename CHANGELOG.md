@@ -19,7 +19,7 @@ but only releases after v1.0.3 properly adhere to it.
 - Functions BlendOkLab and BlendOkLch (#70)
 
 ## Changed
-- `Hex()` parsing is much faster (#78)
+- `Hex()` parsing is much faster (#78). However, it doesn't tolerate hex codes with alpha anymore (previously ignoring the alpha was unintentional).
 
 ### Fixed
 - Fix bug when doing HSV/HCL blending between a gray color and non-gray color (#60)
