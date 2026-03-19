@@ -27,6 +27,10 @@ func TestHexColor(t *testing.T) {
 		if gotValue, err := tc.hc.Value(); err != nil || !reflect.DeepEqual(gotValue, tc.s) {
 			t.Errorf("%v.Value() == %v, %v, want %v, <nil>", tc.hc, gotValue, err, tc.s)
 		}
+		gotString := tc.hc.String()
+		if !reflect.DeepEqual(gotString, tc.s) {
+			t.Errorf("_.String() == %v, want %v", gotString, tc.s)
+		}
 	}
 }
 
