@@ -478,11 +478,12 @@ section above.
 Who?
 ====
 
-This library was developed by Lucas Beyer with contributions from
-Bastien Dejean (@baskerville), Phil Kulak (@pkulak), Christian Muehlhaeuser (@muesli), and Scott Pakin (@spakin).
+This library was originally developed by Lucas Beyer, with notable
+contributions from Bastien Dejean (@baskerville), Phil Kulak (@pkulak),
+Christian Muehlhaeuser (@muesli), Scott Pakin (@spakin), and many others.
+See the [contributors list](https://github.com/lucasb-eyer/go-colorful/graphs/contributors) for the full roster.
 
-It is now maintained by makeworld (@makew0rld).
-
+It is currently maintained by makeworld (@makew0rld).
 
 ## License
 
