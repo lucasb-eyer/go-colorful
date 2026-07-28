@@ -101,6 +101,38 @@ func TestBradfordRoundtrip(t *testing.T) {
 	}
 }
 
+// D50ToD65 must equal the CSS Color 4 D50_to_D65 matrix that D65ToD50 already cites.
+func TestBradfordMatchesCSSColor4(t *testing.T) {
+	// CSS Color 4 D50_to_D65, https://www.w3.org/TR/css-color-4/#color-conversion-code
+	want := [3][3]float64{
+		{0.9554734527042182, -0.023098536874261423, 0.06325964552894382},
+		{-0.028369706963208136, 1.0099954580058226, 0.021041398966943008},
+		{0.012314001688319899, -0.020507696433477912, 1.3303659366080753},
+	}
+	basis := [3][3]float64{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+	for col := 0; col < 3; col++ {
+		xo, yo, zo := D50ToD65(basis[col][0], basis[col][1], basis[col][2])
+		got := [3]float64{xo, yo, zo}
+		for row := 0; row < 3; row++ {
+			if math.Abs(got[row]-want[row][col]) > 1e-12 {
+				t.Errorf("D50ToD65[%d][%d] = %.16g, want %.16g", row, col, got[row], want[row][col])
+			}
+		}
+	}
+}
+
+// D50ToD65 must invert D65ToD50; the truncated legacy matrix drifts ~3e-4 off identity.
+func TestBradfordMutualInverse(t *testing.T) {
+	basis := [3][3]float64{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+	for _, v := range basis {
+		x50, y50, z50 := D65ToD50(v[0], v[1], v[2])
+		x, y, z := D50ToD65(x50, y50, z50)
+		if math.Abs(x-v[0]) > 1e-6 || math.Abs(y-v[1]) > 1e-6 || math.Abs(z-v[2]) > 1e-6 {
+			t.Errorf("D65->D50->D65 of %v = (%v, %v, %v), want identity", v, x, y, z)
+		}
+	}
+}
+
 /// Reference value tests ///
 /////////////////////////////
 
