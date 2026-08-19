@@ -36,6 +36,8 @@ Go-Colorful stores colors in RGB and provides methods from converting these to v
 - **HPLuv:** A variant of HSLuv. The color space is smoother, but only pastel colors can be included. Because the valid colors are limited, it's easy to get invalid Saturation values way above 1.0, indicating the color can't be represented in HPLuv because it's not pastel.
 - **Oklab:** A perceptual color space by Björn Ottosson that improves on CIE-L\*a\*b\* with better perceptual uniformity, especially for blue hues. L in [0..1], a and b roughly in [-0.5..0.5]. See [Oklab](https://bottosson.github.io/posts/oklab/).
 - **Oklch:** The cylindrical (polar) representation of Oklab, similar to HCL. L in [0..1], C roughly in [0..0.5], h° in [0..360].
+- **Okhsl:** An HSL-like space built on top of Oklab by Björn Ottosson, meant for color pickers. Unlike plain HSL it is perceptually uniform, and saturation is scaled so that 1.0 always lands on the sRGB gamut boundary. Hue in [0..360], Saturation and Lightness in [0..1]. See [Okhsl and Okhsv](https://bottosson.github.io/posts/colorpicker/).
+- **Okhsv:** The HSV-like counterpart of Okhsl, also from Björn Ottosson. Hue in [0..360], Saturation and Value in [0..1].
 
 For the colorspaces where it makes sense (XYZ, Lab, Luv, HCl), the
 [D65](http://en.wikipedia.org/wiki/Illuminant_D65) is used as reference white
@@ -100,6 +102,8 @@ c = colorful.Luv(0.507849,-0.194172,-0.567924)
 c = colorful.Hcl(276.2440, 0.373160, 0.507849)
 c = colorful.OkLab(0.577227, -0.021391, -0.104541)
 c = colorful.OkLch(0.577227, 0.106707, 258.435657)
+c = colorful.Okhsl(258.426451, 0.548632, 0.509645)
+c = colorful.Okhsv(258.426451, 0.580382, 0.736509)
 fmt.Printf("RGB values: %v, %v, %v", c.R, c.G, c.B)
 ```
 
@@ -115,6 +119,8 @@ l, u, v := c.Luv()
 h, c, l := c.Hcl()
 l, a, b = c.OkLab()
 l, c, h = c.OkLch()
+h, s, l = c.Okhsl()
+h, s, v = c.Okhsv()
 ```
 
 Note that, because of Go's unfortunate choice of requiring an initial uppercase,

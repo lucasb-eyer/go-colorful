@@ -7,6 +7,8 @@ The format of this file is based on [Keep a Changelog](https://keepachangelog.co
 but only releases after v1.0.3 properly adhere to it.
 
 ## [Unreleased]
+### Added
+- Constructors and decomposers for the `Okhsl` and `Okhsv` color spaces (#56)
 
 ## [1.4.1] - 2026-08-02
 ### Fixed
