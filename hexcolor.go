@@ -1,45 +1,17 @@
 package colorful
 
 import (
-	"database/sql/driver"
 	"encoding/json"
-	"fmt"
-	"reflect"
 )
 
 // A HexColor is a Color stored as a hex string "#rrggbb". It implements the
-// database/sql.Scanner, database/sql/driver.Value,
-// encoding/json.Unmarshaler and encoding/json.Marshaler interfaces.
+// encoding/json and gopkg.in/yaml marshaller interfaces, and the envconfig
+// Decoder. The database/sql integration lives in hexcolor_sql.go, which is
+// built only where a database/sql consumer can exist.
 type HexColor Color
-
-type errUnsupportedType struct {
-	got  interface{}
-	want reflect.Type
-}
-
-func (hc *HexColor) Scan(value interface{}) error {
-	s, ok := value.(string)
-	if !ok {
-		return errUnsupportedType{got: reflect.TypeOf(value), want: reflect.TypeOf("")}
-	}
-	c, err := Hex(s)
-	if err != nil {
-		return err
-	}
-	*hc = HexColor(c)
-	return nil
-}
-
-func (hc *HexColor) Value() (driver.Value, error) {
-	return Color(*hc).Hex(), nil
-}
 
 func (hc HexColor) String() string {
 	return Color(hc).Hex()
-}
-
-func (e errUnsupportedType) Error() string {
-	return fmt.Sprintf("unsupported type: got %v, want a %s", e.got, e.want)
 }
 
 func (hc *HexColor) UnmarshalJSON(data []byte) error {
