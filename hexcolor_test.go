@@ -6,34 +6,6 @@ import (
 	"testing"
 )
 
-func TestHexColor(t *testing.T) {
-	for _, tc := range []struct {
-		hc HexColor
-		s  string
-	}{
-		{HexColor{R: 0, G: 0, B: 0}, "#000000"},
-		{HexColor{R: 1, G: 0, B: 0}, "#ff0000"},
-		{HexColor{R: 0, G: 1, B: 0}, "#00ff00"},
-		{HexColor{R: 0, G: 0, B: 1}, "#0000ff"},
-		{HexColor{R: 1, G: 1, B: 1}, "#ffffff"},
-	} {
-		var gotHC HexColor
-		if err := gotHC.Scan(tc.s); err != nil {
-			t.Errorf("_.Scan(%q) == %v, want <nil>", tc.s, err)
-		}
-		if !reflect.DeepEqual(gotHC, tc.hc) {
-			t.Errorf("_.Scan(%q) wrote %v, want %v", tc.s, gotHC, tc.hc)
-		}
-		if gotValue, err := tc.hc.Value(); err != nil || !reflect.DeepEqual(gotValue, tc.s) {
-			t.Errorf("%v.Value() == %v, %v, want %v, <nil>", tc.hc, gotValue, err, tc.s)
-		}
-		gotString := tc.hc.String()
-		if !reflect.DeepEqual(gotString, tc.s) {
-			t.Errorf("_.String() == %v, want %v", gotString, tc.s)
-		}
-	}
-}
-
 type CompositeType struct {
 	Name  string   `json:"name,omitempty"`
 	Color HexColor `json:"color,omitempty"`
@@ -56,4 +28,21 @@ func TestHexColorCompositeJson(t *testing.T) {
 		t.Errorf("json.Unmarshal(json.Marsrhall(obj)) != obj")
 	}
 
+}
+
+// TestHexColorString covers String on every target, including the ones where
+// the database/sql methods are built out.
+func TestHexColorString(t *testing.T) {
+	for _, tc := range []struct {
+		hc HexColor
+		s  string
+	}{
+		{HexColor{R: 0, G: 0, B: 0}, "#000000"},
+		{HexColor{R: 1, G: 0, B: 1}, "#ff00ff"},
+		{HexColor{R: 1, G: 1, B: 1}, "#ffffff"},
+	} {
+		if got := tc.hc.String(); got != tc.s {
+			t.Errorf("_.String() == %v, want %v", got, tc.s)
+		}
+	}
 }
