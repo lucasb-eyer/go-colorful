@@ -486,6 +486,26 @@ func TestXyzToOkLab(t *testing.T) {
 	}
 }
 
+// XyzToOkLab and OkLabToXyz must be mutual inverses.
+func TestOkLabRoundTrip(t *testing.T) {
+	for r := 0; r < 256; r += 8 {
+		for g := 0; g < 256; g += 8 {
+			for b := 0; b < 256; b += 8 {
+				c := Color{float64(r) / 255, float64(g) / 255, float64(b) / 255}
+				l, a, bb := c.OkLab()
+				if back := OkLab(l, a, bb); !c.AlmostEqualRgb(back) {
+					t.Errorf("OkLab round-trip %v -> %v", c, back)
+				}
+			}
+		}
+	}
+
+	l, a, b := Color{1, 1, 1}.OkLab()
+	if math.Abs(l-1) > 1e-6 || math.Abs(a) > 1e-6 || math.Abs(b) > 1e-6 {
+		t.Errorf("OkLab(white) = %v %v %v, want 1 0 0", l, a, b)
+	}
+}
+
 func TestOklabToXyz(t *testing.T) {
 	for i, tCase := range xyzOklabPairs {
 		x, y, z := OkLabToXyz(tCase.l, tCase.a, tCase.b)
