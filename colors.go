@@ -934,13 +934,14 @@ func (col Color) Hcl() (h, c, l float64) {
 }
 
 func LabToHcl(L, a, b float64) (h, c, l float64) {
-	// Oops, floating point workaround necessary if a ~= b and both are very small (i.e. almost zero).
-	if math.Abs(b-a) > 1e-4 && math.Abs(a) > 1e-4 {
+	// Gate on chroma. The old Abs(b-a)&&Abs(a) check wrongly forced h=0 at
+	// 45°/90°/225°/270° even with large chroma (#91).
+	c = math.Sqrt(sq(a) + sq(b))
+	if c > 1e-3 {
 		h = math.Mod(57.29577951308232087721*math.Atan2(b, a)+360.0, 360.0) // Rad2Deg
 	} else {
 		h = 0.0
 	}
-	c = math.Sqrt(sq(a) + sq(b))
 	l = L
 	return
 }
@@ -1003,14 +1004,14 @@ func (col Color) LuvLCh() (l, c, h float64) {
 }
 
 func LuvToLuvLCh(L, u, v float64) (l, c, h float64) {
-	// Oops, floating point workaround necessary if u ~= v and both are very small (i.e. almost zero).
-	if math.Abs(v-u) > 1e-4 && math.Abs(u) > 1e-4 {
+	// Same chroma gate as LabToHcl (#91).
+	c = math.Sqrt(sq(u) + sq(v))
+	if c > 1e-3 {
 		h = math.Mod(57.29577951308232087721*math.Atan2(v, u)+360.0, 360.0) // Rad2Deg
 	} else {
 		h = 0.0
 	}
 	l = L
-	c = math.Sqrt(sq(u) + sq(v))
 	return
 }
 
