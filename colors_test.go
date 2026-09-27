@@ -795,3 +795,40 @@ func TestInterpolation(t *testing.T) {
 		}
 	}
 }
+
+// Issue #91: hues at 45°/90°/225°/270° used to round-trip as 0 because LabToHcl
+// (and LuvToLuvLCh) treated a≈b or a≈0 as achromatic even with large chroma.
+func TestHclHueRoundTripCardinalAngles(t *testing.T) {
+	for _, hue := range []float64{0, 45, 90, 135, 180, 225, 270, 315, 44, 46} {
+		c := Hcl(hue, 0.3, 0.6)
+		h, ch, l := c.Hcl()
+		if !almosteq(ch, 0.3) || !almosteq(l, 0.6) {
+			t.Errorf("Hcl(%v, 0.3, 0.6).Hcl() chroma/L = (%v, %v)", hue, ch, l)
+		}
+		// Allow wrapping near 0/360
+		diff := math.Abs(h - hue)
+		if diff > 180 {
+			diff = 360 - diff
+		}
+		if diff > delta {
+			t.Errorf("Hcl(%v, 0.3, 0.6).Hcl() hue = %v, want ~%v", hue, h, hue)
+		}
+	}
+}
+
+func TestLuvLChHueRoundTripCardinalAngles(t *testing.T) {
+	for _, hue := range []float64{0, 45, 90, 135, 180, 225, 270, 315} {
+		c := LuvLCh(0.6, 0.3, hue)
+		l, ch, h := c.LuvLCh()
+		if !almosteq(ch, 0.3) || !almosteq(l, 0.6) {
+			t.Errorf("LuvLCh(0.6, 0.3, %v).LuvLCh() = (%v, %v, %v)", hue, l, ch, h)
+		}
+		diff := math.Abs(h - hue)
+		if diff > 180 {
+			diff = 360 - diff
+		}
+		if diff > delta {
+			t.Errorf("LuvLCh(0.6, 0.3, %v).LuvLCh() hue = %v, want ~%v", hue, h, hue)
+		}
+	}
+}
