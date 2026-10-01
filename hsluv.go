@@ -6,14 +6,16 @@ import "math"
 // Under MIT License
 // Modified so that Saturation and Luminance are in [0..1] instead of [0..100].
 
-// HSLuv uses a rounded version of the D65. This has no impact on the final RGB
-// values, but to keep high levels of accuracy for internal operations and when
-// comparing to the test values, this modified white reference is used internally.
+// HSLuv uses a rounded version of the D65 (with 17 significant digits). This
+// has no impact on the final RGB values, but to keep high levels of accuracy
+// for internal operations and when comparing to the test values, this modified
+// white reference is used internally.
 //
-// See this GitHub thread for details on these values:
+// See these GitHub threads for details on these values:
 //
 //	https://github.com/hsluv/hsluv/issues/79
-var hSLuvD65 = [3]float64{0.95045592705167, 1.0, 1.089057750759878}
+//	https://github.com/hsluv/hsluv/pull/82
+var hSLuvD65 = [3]float64{0.9504559270516717, 1.0, 1.0890577507598784}
 
 func LuvLChToHSLuv(l, c, h float64) (float64, float64, float64) {
 	// [-1..1] but the code expects it to be [-100..100]
@@ -148,7 +150,7 @@ const kappa = 903.2962962962963
 const epsilon = 0.0088564516790356308
 
 func maxChromaForLH(l, h float64) float64 {
-	hRad := h / 360.0 * math.Pi * 2.0
+	hRad := h / 180.0 * math.Pi
 	minLength := math.MaxFloat64
 	for _, line := range getBounds(l) {
 		length := lengthOfRayUntilIntersect(hRad, line[0], line[1])

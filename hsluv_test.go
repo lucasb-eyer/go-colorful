@@ -141,3 +141,34 @@ func TestHSLuv(t *testing.T) {
 		}
 	}
 }
+
+func TestHSLuvConstants(t *testing.T) {
+	// D65 reference white point with 17 significant digits derived from
+	// CIE xyY coordinates (x = 0.3127, y = 0.3290, Y = 1.0).
+	// See https://github.com/hsluv/hsluv/issues/54, #79, and PR #82.
+	expectedD65 := [3]float64{0.9504559270516717, 1.0, 1.0890577507598784}
+	if hSLuvD65 != expectedD65 {
+		t.Errorf("hSLuvD65 = %v, want %v", hSLuvD65, expectedD65)
+	}
+
+	// Verify un, vn derived from hSLuvD65 match Hsluv.hx refU, refV to high precision.
+	un, vn := xyz_to_uv(hSLuvD65[0], hSLuvD65[1], hSLuvD65[2])
+	const refU = 0.19783000664283681
+	const refV = 0.468319994938791
+	if math.Abs(un-refU) > 1e-15 {
+		t.Errorf("un = %.17g, want %.17g", un, refU)
+	}
+	if math.Abs(vn-refV) > 1e-15 {
+		t.Errorf("vn = %.17g, want %.17g", vn, refV)
+	}
+
+	// Verify kappa and epsilon CIE constants.
+	const wantKappa = 903.2962962962963
+	const wantEpsilon = 0.0088564516790356308
+	if math.Abs(kappa-wantKappa) > 1e-15 {
+		t.Errorf("kappa = %.17g, want %.17g", kappa, wantKappa)
+	}
+	if math.Abs(epsilon-wantEpsilon) > 1e-15 {
+		t.Errorf("epsilon = %.17g, want %.17g", epsilon, wantEpsilon)
+	}
+}
