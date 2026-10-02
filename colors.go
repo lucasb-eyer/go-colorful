@@ -980,6 +980,13 @@ func HclWhiteRef(h, c, l float64, wref [3]float64) Color {
 // BlendHcl blends two colors in the CIE-L*C*h° color-space, which should result in a smoother blend.
 // t == 0 results in c1, t == 1 results in c2
 func (col1 Color) BlendHcl(col2 Color, t float64) Color {
+	if t <= 0.0 {
+		return col1
+	}
+	if t >= 1.0 {
+		return col2
+	}
+
 	h1, c1, l1 := col1.Hcl()
 	h2, c2, l2 := col2.Hcl()
 

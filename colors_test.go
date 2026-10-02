@@ -745,6 +745,35 @@ func TestIssue11(t *testing.T) {
 	}
 }
 
+// https://github.com/lucasb-eyer/go-colorful/issues/46
+func TestIssue46(t *testing.T) {
+	c1, err := Hex("#ff0000")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c2, err := Hex("#00ff00")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if b0 := c1.BlendHcl(c2, 0.0); b0 != c1 {
+		t.Errorf("BlendHcl(c2, 0.0) = %+v, want %+v", b0, c1)
+	}
+	if b1 := c1.BlendHcl(c2, 1.0); b1 != c2 {
+		t.Errorf("BlendHcl(c2, 1.0) = %+v, want %+v", b1, c2)
+	}
+
+	for _, tt := range vals {
+		if b0 := tt.c.BlendHcl(c2, 0.0); b0 != tt.c {
+			t.Errorf("BlendHcl(c2, 0.0) for %v = %+v, want %+v", tt.c, b0, tt.c)
+		}
+		if b1 := c1.BlendHcl(tt.c, 1.0); b1 != tt.c {
+			t.Errorf("BlendHcl(tt.c, 1.0) for %v = %+v, want %+v", tt.c, b1, tt.c)
+		}
+	}
+}
+
+
 // For testing angular interpolation internal function
 // NOTE: They are being tested in both directions.
 var anglevals = []struct {
