@@ -1,6 +1,7 @@
 package colorful
 
 import (
+	"database/sql/driver"
 	"encoding/json"
 	"reflect"
 	"testing"
@@ -56,4 +57,13 @@ func TestHexColorCompositeJson(t *testing.T) {
 		t.Errorf("json.Unmarshal(json.Marsrhall(obj)) != obj")
 	}
 
+}
+
+func TestHexColorDriverValue(t *testing.T) {
+	// database/sql passes query arguments by value, so HexColor (not just
+	// *HexColor) has to implement driver.Valuer.
+	got, err := driver.DefaultParameterConverter.ConvertValue(HexColor{R: 1, G: 0, B: 0})
+	if err != nil || got != "#ff0000" {
+		t.Errorf("ConvertValue(HexColor) == %v, %v, want #ff0000, <nil>", got, err)
+	}
 }

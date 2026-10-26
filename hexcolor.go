@@ -30,8 +30,8 @@ func (hc *HexColor) Scan(value interface{}) error {
 	return nil
 }
 
-func (hc *HexColor) Value() (driver.Value, error) {
-	return Color(*hc).Hex(), nil
+func (hc HexColor) Value() (driver.Value, error) {
+	return Color(hc).Hex(), nil
 }
 
 func (hc HexColor) String() string {
