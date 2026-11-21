@@ -57,3 +57,13 @@ func TestHexColorCompositeJson(t *testing.T) {
 	}
 
 }
+
+func TestHexColorScanBytes(t *testing.T) {
+	var color HexColor
+	if err := color.Scan([]byte("#ff0000")); err != nil {
+		t.Fatal(err)
+	}
+	if got := color.String(); got != "#ff0000" {
+		t.Fatalf("got %s, want #ff0000", got)
+	}
+}
