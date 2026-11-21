@@ -18,16 +18,14 @@ type errUnsupportedType struct {
 }
 
 func (hc *HexColor) Scan(value interface{}) error {
-	s, ok := value.(string)
-	if !ok {
+	switch v := value.(type) {
+	case string:
+		return hc.Decode(v)
+	case []byte:
+		return hc.Decode(string(v))
+	default:
 		return errUnsupportedType{got: reflect.TypeOf(value), want: reflect.TypeOf("")}
 	}
-	c, err := Hex(s)
-	if err != nil {
-		return err
-	}
-	*hc = HexColor(c)
-	return nil
 }
 
 func (hc *HexColor) Value() (driver.Value, error) {
